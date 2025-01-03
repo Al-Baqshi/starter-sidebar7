@@ -1,23 +1,27 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  LayoutDashboard,
+  FolderOpen,
+  Files,
+  Building2,
+  Users2,
+  DollarSign,
+  FileText,
+  Store,
+  BarChart3,
+  Settings,
+  Network,
+  UserPlus,
+  FileCheck2,
+  ShieldCheck,
+  MessagesSquare,
+  User
 } from "lucide-react"
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavProjects } from "@/components/sidebar/nav-projects"
 import { NavUser } from "@/components/sidebar/nav-user"
-import { TeamSwitcher } from "@/components/sidebar/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -32,148 +36,129 @@ export {
   SidebarTrigger
 } from "@/components/ui/sidebar"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+const menuItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  {
+    title: "Projects",
+    url: "/projects",
+    icon: FolderOpen,
+  },
+  {
+    title: "File Manager",
+    url: "/file-manager",
+    icon: Files,
+  },
+  {
+    title: "On-Site Management",
+    url: "/on-site",
+    icon: Building2,
+  },
+  {
+    title: "Collaboration Hub",
+    url: "/collaboration",
+    icon: MessagesSquare,
+  },
+  {
+    title: "Finance",
+    url: "/finance",
+    icon: DollarSign,
+  },
+  {
+    title: "Tenders",
+    url: "/tenders",
+    icon: FileText,
+  },
+  {
+    title: "SOQ Client",
+    url: "/soq",
+    icon: User,
+  },
+  {
+    title: "SOQ Viewer",
+    url: "/soq/bidder",
+    icon: Users2,
+  },
+  {
+    title: "Reports & Analytics",
+    url: "/reports",
+    icon: BarChart3,
+  },
+  {
+    title: "Marketplace",
+    url: "/marketplace",
+    icon: Store,
+  },
+  {
+    title: "User Management",
+    url: "/users",
+    icon: Users2,
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
+  {
+    title: "Networking",
+    url: "/profiles",
+    icon: Network,
+  },
+  {
+    title: "Create Profile",
+    url: "/profile/create",
+    icon: UserPlus,
+  },
+  {
+    title: "KYC/KYB Application",
+    url: "/kyc-application",
+    icon: FileCheck2,
+  },
+  {
+    title: "KYC/KYB Admin",
+    url: "/kyc-admin",
+    icon: ShieldCheck,
+  },
+]
+
+const user = {
+  name: "shadcn",
+  email: "m@example.com",
+  avatar: "/avatars/shadcn.jpg",
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [activeItem, setActiveItem] = React.useState("/dashboard")
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <h1 className="px-4 text-xl font-bold">SOQ Dashboard</h1>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <nav className="space-y-1">
+          {menuItems.map((item) => (
+            <Link
+              key={item.url}
+              href={item.url}
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                activeItem === item.url
+                  ? "bg-gray-100 dark:bg-gray-800 text-primary"
+                  : "text-gray-600 dark:text-gray-400"
+              }`}
+              onClick={() => setActiveItem(item.url)}
+            >
+              <item.icon className="w-5 h-5 mr-3" />
+              {item.title}
+            </Link>
+          ))}
+        </nav>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
