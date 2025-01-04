@@ -75,41 +75,6 @@ export function Filters({
           onChange={handleSearch}
           className="w-full sm:w-auto"
         />
-        <div className="flex flex-wrap gap-2">
-          <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={selectedRole} onValueChange={handleRoleChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              {roles.map((role) => (
-                <SelectItem key={role} value={role}>{role}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={selectedEntity} onValueChange={handleEntityChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select entity" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Entities</SelectItem>
-              {entities.map((entity) => (
-                <SelectItem key={entity.id} value={entity.name}>{entity.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
       </div>
       <div className="flex justify-end">
         <Dialog>

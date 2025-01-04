@@ -5,18 +5,29 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
+import { FileText } from 'lucide-react'
 
 // Mock data for KYC/KYB applications
 const mockApplications = [
-  { id: 1, companyName: "Tech Solutions Inc.", status: "Pending", submissionDate: "2023-06-01" },
-  { id: 2, companyName: "Green Energy Co.", status: "Verified", submissionDate: "2023-05-28" },
-  { id: 3, companyName: "Global Logistics Ltd.", status: "Rejected", submissionDate: "2023-05-25" },
-  { id: 4, companyName: "Innovative Startups LLC", status: "Pending", submissionDate: "2023-06-02" },
+  { 
+    id: 1, 
+    companyName: "Tech Solutions Inc.", 
+    status: "Pending", 
+    submissionDate: "2023-06-01",
+    documents: [
+      { name: "Business Registration", type: "PDF" },
+      { name: "Tax Certificate", type: "PDF" },
+      { name: "Director's ID", type: "Image" }
+    ]
+  },
+  { id: 2, companyName: "Green Energy Co.", status: "Verified", submissionDate: "2023-05-28", documents: [] },
+  { id: 3, companyName: "Global Logistics Ltd.", status: "Rejected", submissionDate: "2023-05-25", documents: [] },
+  { id: 4, companyName: "Innovative Startups LLC", status: "Pending", submissionDate: "2023-06-02", documents: [] },
 ]
 
 export default function KYCAdminPage() {
@@ -72,23 +83,41 @@ export default function KYCAdminPage() {
                   <TableCell>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" onClick={() => setSelectedApplication(application)}>
-                          Review
-                        </Button>
+                        <Button variant="outline">Review Documents</Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="max-w-4xl">
                         <DialogHeader>
-                          <DialogTitle>Review KYC/KYB Application</DialogTitle>
+                          <DialogTitle>Review KYC/KYB Documents</DialogTitle>
                           <DialogDescription>
-                            Update the status of the KYC/KYB application for {selectedApplication?.companyName}
+                            Review submitted documents for {application.companyName}
                           </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
+                          <div className="grid gap-4">
+                            {application.documents?.map((doc, index) => (
+                              <Card key={index}>
+                                <CardHeader>
+                                  <CardTitle className="text-base">{doc.name}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-2">
+                                      <FileText className="h-4 w-4" />
+                                      <span className="text-sm text-muted-foreground">{doc.type}</span>
+                                    </div>
+                                    <Button variant="outline" size="sm">View Document</Button>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="status" className="text-right">
-                              Status
-                            </Label>
-                            <Select onValueChange={setNewStatus} defaultValue={selectedApplication?.status}>
+                            <Label htmlFor="status" className="text-right">Status</Label>
+                            <Select
+                              value={newStatus}
+                              onValueChange={setNewStatus}
+                              defaultValue={application.status}
+                            >
                               <SelectTrigger className="col-span-3">
                                 <SelectValue placeholder="Select new status" />
                               </SelectTrigger>
@@ -101,9 +130,7 @@ export default function KYCAdminPage() {
                           </div>
                           {newStatus === "Rejected" && (
                             <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="reason" className="text-right">
-                                Reason
-                              </Label>
+                              <Label htmlFor="reason" className="text-right">Reason</Label>
                               <Textarea
                                 id="reason"
                                 placeholder="Enter rejection reason"
@@ -115,7 +142,7 @@ export default function KYCAdminPage() {
                           )}
                         </div>
                         <DialogFooter>
-                          <Button onClick={() => handleStatusChange(selectedApplication?.id, newStatus, rejectionReason)}>
+                          <Button onClick={() => handleStatusChange(application.id, newStatus, rejectionReason)}>
                             Update Status
                           </Button>
                         </DialogFooter>

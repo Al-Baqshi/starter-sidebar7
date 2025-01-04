@@ -246,68 +246,135 @@ export default function OnSiteManagementPage() {
           </Card>
         </TabsContent>
         <TabsContent value="workers">
-          <Card>
-            <CardHeader>
-              <CardTitle>Active Workers</CardTitle>
-              <CardDescription>Current on-site personnel and their roles</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Logged Time</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {workers.map((worker) => (
-                    <TableRow key={worker.id}>
-                      <TableCell>{worker.name}</TableCell>
-                      <TableCell>{worker.role}</TableCell>
-                      <TableCell>
-                        <Badge variant={worker.status === "On Site" ? "success" : "secondary"}>
-                          {worker.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{worker.lastLoggedTime}</TableCell>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Daily Log</CardTitle>
+                <CardDescription>Record and review daily activities, progress, and important notes on the construction site.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      type="date"
+                      defaultValue={new Date().toISOString().split('T')[0]}
+                    />
+                    <Input
+                      placeholder="Author"
+                    />
+                  </div>
+                  <Textarea
+                    placeholder="Enter detailed log entry here..."
+                    className="min-h-[100px]"
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Weather conditions" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sunny">Sunny</SelectItem>
+                        <SelectItem value="partly-cloudy">Partly Cloudy</SelectItem>
+                        <SelectItem value="cloudy">Cloudy</SelectItem>
+                        <SelectItem value="overcast">Overcast</SelectItem>
+                        <SelectItem value="light-rain">Light Rain</SelectItem>
+                        <SelectItem value="heavy-rain">Heavy Rain</SelectItem>
+                        <SelectItem value="storm">Storm</SelectItem>
+                        <SelectItem value="snow">Snow</SelectItem>
+                        <SelectItem value="fog">Fog</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Temperature" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({length: 61}, (_, i) => i + 20).map((temp) => (
+                          <SelectItem key={temp} value={temp.toString()}>{temp}°F</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input placeholder="Crew size" type="number" />
+                  </div>
+                  <Button>Add Log Entry</Button>
+                </div>
+
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-4">Recent Entries</h3>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        date: "2025-01-03",
+                        author: "John Smith",
+                        content: "Completed foundation work on the east wing. Weather conditions were favorable, and we made good progress.",
+                        weather: "Sunny",
+                        temperature: "72°F",
+                        crewSize: 15
+                      },
+                      {
+                        date: "2025-01-02",
+                        author: "Sarah Johnson",
+                        content: "Started electrical wiring in the main building. Encountered some challenges with the old wiring system.",
+                        weather: "Partly Cloudy",
+                        temperature: "68°F",
+                        crewSize: 12
+                      }
+                    ].map((entry, index) => (
+                      <Card key={index}>
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="font-semibold">{entry.date}</p>
+                              <p className="text-sm text-muted-foreground">{entry.author}</p>
+                            </div>
+                            <div className="text-sm text-right">
+                              <p>Weather: {entry.weather}</p>
+                              <p>Temp: {entry.temperature}</p>
+                              <p>Crew: {entry.crewSize}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm">{entry.content}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Active Workers</CardTitle>
+                <CardDescription>Current on-site personnel and their roles</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last Logged Time</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Worker Logs</CardTitle>
-              <CardDescription>Recent worker check-ins and check-outs</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Worker Name</TableHead>
-                    <TableHead>Action</TableHead>
-                    <TableHead>Timestamp</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {workerLogs.map((log) => (
-                    <TableRow key={log.id}>
-                      <TableCell>{log.workerName}</TableCell>
-                      <TableCell>
-                        <Badge variant={log.action === "Log In" ? "success" : "secondary"}>
-                          {log.action}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{log.timestamp}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {workers.map((worker) => (
+                      <TableRow key={worker.id}>
+                        <TableCell>{worker.name}</TableCell>
+                        <TableCell>{worker.role}</TableCell>
+                        <TableCell>
+                          <Badge variant={worker.status === "On Site" ? "success" : "secondary"}>
+                            {worker.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{worker.lastLoggedTime}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
         <TabsContent value="equipment">
           <Card>

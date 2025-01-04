@@ -15,7 +15,6 @@ export function MainNav({ className, ...props }: MainNavProps) {
     { name: 'Projects', href: '/projects', icon: FolderIcon },
     { name: 'File Manager', href: '/file-manager', icon: FolderIcon },
     { name: 'On-Site Management', href: '/on-site', icon: HardHatIcon },
-    { name: 'Collaboration Hub', href: '/collaboration', icon: MessageSquare },
     { name: 'Finance', href: '/finance', icon: DollarSignIcon },
     { name: 'Tenders', href: '/tenders', icon: FileIcon },
     { name: 'SOQ Client', href: '/soq', icon: FileText },
@@ -35,20 +34,19 @@ export function MainNav({ className, ...props }: MainNavProps) {
       {navigation.map((item) => {
         const Icon = item.icon
         return (
-          <Button
+          <Link
             key={item.name}
-            variant={item.href === pathname ? 'secondary' : 'ghost'}
+            href={item.href}
             className={cn(
-              "justify-start hover:bg-white/10 transition-colors w-full",
-              item.href === pathname ? "bg-white/10" : ""
+              "flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-md",
+              item.href === pathname
+                ? "bg-secondary text-secondary-foreground"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             )}
-            asChild
           >
-            <Link href={item.href}>
-              <Icon className="mr-2 h-4 w-4" />
-              <span className="hover:text-gray-300 transition-colors">{item.name}</span>
-            </Link>
-          </Button>
+            <Icon className="h-5 w-5" />
+            <span>{item.name}</span>
+          </Link>
         )
       })}
     </nav>

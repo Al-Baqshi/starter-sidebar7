@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { UserList } from '@/components/UserList'
-import { mockUsers } from '@/app/users/data/mockData'
+import { mockUsers } from './data/mockData'
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"

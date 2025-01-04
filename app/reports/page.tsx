@@ -136,7 +136,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Monthly comparison of budgeted vs. actual project expenses</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer>
+              <ChartContainer config={{ type: 'line' }}>
                 <LineChartComponent
                   data={projectInsightsData}
                   categories={["Budget", "Actual"]}
@@ -152,7 +152,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Overview of task completion across the project</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer>
+              <ChartContainer config={{ type: 'pie' }}>
                 <PieChartComponent data={taskCompletionData} />
               </ChartContainer>
             </CardContent>
@@ -166,7 +166,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Key financial metrics for the current project</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer>
+              <ChartContainer config={{ type: 'bar' }}>
                 <BarChartComponent data={financialMetricsData} />
               </ChartContainer>
             </CardContent>

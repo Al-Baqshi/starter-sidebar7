@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { ThemeProvider } from "@/components/sidebar/theme-provider";
 import { ModeToggle } from "@/components/sidebar/mode-toogle";
+import { Toaster } from "@/components/ui/toaster"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -49,6 +50,7 @@ export default function RootLayout({
             </main>
           </SidebarProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

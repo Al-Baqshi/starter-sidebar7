@@ -267,35 +267,38 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
           job.status === 'ready' ? "bg-green-50 dark:bg-green-900" : ""
         )}>
           <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <div className="flex items-center space-x-2">
-                <span>{job.name} (ID: {job.jobId})</span>
-                {job.includedInTender && (
-                  <Badge variant="outline" className="ml-2">
-                    In Tender
-                  </Badge>
-                )}
+            <CardTitle className="flex flex-col">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                  <span>{job.name} (ID: {job.jobId})</span>
+                  {job.includedInTender && (
+                    <Badge variant="outline" className="ml-2">
+                      In Tender
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm font-normal">Total: ${formatNumber(job.totalCost ?? 0)}</span>
+                  <Select
+                    value={job.status}
+                    onValueChange={(value) => handleStatusChange(job, value as 'draft' | 'ready')}
+                  >
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="ready">Ready</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => setExpandedJobId(expandedJobId === job.id ? null : job.id)}
+                  >
+                    {expandedJobId === job.id ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm font-normal">Total: ${formatNumber(job.totalCost ?? 0)}</span>
-                <Select
-                  value={job.status}
-                  onValueChange={(value) => handleStatusChange(job, value as 'draft' | 'ready')}
-                >
-                  <SelectTrigger className="w-[100px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="ready">Ready</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button
-                  onClick={() => setExpandedJobId(expandedJobId === job.id ? null : job.id)}
-                >
-                  {expandedJobId === job.id ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                </Button>
-              </div>
+              <p className="text-sm text-muted-foreground mt-2">{job.description}</p>
             </CardTitle>
             <div className="flex justify-between items-center mt-2 text-sm text-muted-foreground">
               <span>{job.status === 'ready' ? 'Ready - Not Editable' : 'Draft - Editable'}</span>

@@ -9,54 +9,48 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "@/hooks/use-toast"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { toast } from "@/components/ui/use-toast"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 
 const formSchema = z.object({
-  companyName: z.string().min(2, {
-    message: "Company name must be at least 2 characters.",
-  }),
-  registrationNumber: z.string().min(1, {
-    message: "Registration number is required.",
-  }),
-  country: z.string().min(1, {
-    message: "Country is required.",
-  }),
-  address: z.string().min(5, {
-    message: "Address must be at least 5 characters.",
-  }),
-  contactPerson: z.string().min(2, {
-    message: "Contact person name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phone: z.string().min(5, {
-    message: "Phone number must be at least 5 characters.",
-  }),
-  businessType: z.string().min(1, {
-    message: "Business type is required.",
-  }),
-  businessDescription: z.string().min(10, {
-    message: "Business description must be at least 10 characters.",
-  }),
+  // KYC fields
+  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }).optional(),
+  dateOfBirth: z.string().optional(),
+  address: z.string().min(5, { message: "Address must be at least 5 characters." }).optional(),
+  idType: z.enum(["passport", "drivers_license", "national_id"]).optional(),
+  idNumber: z.string().min(1, { message: "ID number is required." }).optional(),
+  idDocument: z.any().refine((file) => file instanceof File, {
+    message: "Please upload a valid document.",
+  }).optional(),
+
+  // KYB fields
+  companyName: z.string().min(2, { message: "Company name must be at least 2 characters." }).optional(),
+  nzbn: z.string().min(13, { message: "NZBN must be 13 digits." }).max(13).optional(),
+  companyAddress: z.string().min(5, { message: "Company address must be at least 5 characters." }).optional(),
+  directorName: z.string().min(2, { message: "Director's name must be at least 2 characters." }).optional(),
+  businessType: z.enum(["sole_trader", "partnership", "limited_company", "trust"]).optional(),
 })
 
 export default function KYCApplicationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [applicationType, setApplicationType] = useState<"individual" | "business" | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      companyName: "",
-      registrationNumber: "",
-      country: "",
+      fullName: "",
+      dateOfBirth: "",
       address: "",
-      contactPerson: "",
-      email: "",
-      phone: "",
+      idType: "",
+      idNumber: "",
+      idDocument: null,
+      companyName: "",
+      nzbn: "",
+      companyAddress: "",
+      directorName: "",
       businessType: "",
-      businessDescription: "",
     },
   })
 
@@ -78,153 +72,208 @@ export default function KYCApplicationPage() {
       <Card>
         <CardHeader>
           <CardTitle>KYC/KYB Application</CardTitle>
-          <CardDescription>Please fill out the form below to submit your KYC/KYB application.</CardDescription>
+          <CardDescription>Please select your application type and fill out the form below.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="companyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter company name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="registrationNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Registration Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter registration number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <RadioGroup className="mb-6" onValueChange={(value) => setApplicationType(value as "individual" | "business")}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="individual" id="individual" />
+              <Label htmlFor="individual">Individual (KYC)</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="business" id="business" />
+              <Label htmlFor="business">Business (KYB)</Label>
+            </div>
+          </RadioGroup>
+
+          {applicationType === "individual" && (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a country" />
-                        </SelectTrigger>
+                        <Input placeholder="Enter your full name" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="us">United States</SelectItem>
-                        <SelectItem value="uk">United Kingdom</SelectItem>
-                        <SelectItem value="ca">Canada</SelectItem>
-                        {/* Add more countries as needed */}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Enter company address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="contactPerson"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact Person</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter contact person's name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter email address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="businessType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Business Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select business type" />
-                        </SelectTrigger>
+                        <Input type="date" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="corporation">Corporation</SelectItem>
-                        <SelectItem value="llc">LLC</SelectItem>
-                        <SelectItem value="partnership">Partnership</SelectItem>
-                        <SelectItem value="soleProprietorship">Sole Proprietorship</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="businessDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Business Description</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Describe your business" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Application"}
-              </Button>
-            </form>
-          </Form>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Residential Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter your full residential address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="idType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ID Type</FormLabel>
+                      <Select onValueChange={(value) => {
+                        field.onChange(value);
+                        form.setValue("idDocument", null); // Reset file input when ID type changes
+                      }} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select ID type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="passport">Passport</SelectItem>
+                          <SelectItem value="drivers_license">Driver's License</SelectItem>
+                          <SelectItem value="national_id">National ID</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="idDocument"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{field.value ? `Upload ${form.getValues("idType")} Document` : "Upload ID Document"}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="file" 
+                          accept=".pdf,.jpg,.jpeg,.png" 
+                          onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : null)}
+                          disabled={!form.getValues("idType")}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Please upload a clear, legible copy of your selected ID document.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="idNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ID Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter your ID number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Submit KYC Application</Button>
+              </form>
+            </Form>
+          )}
+
+          {applicationType === "business" && (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter company name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nzbn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>New Zealand Business Number (NZBN)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter NZBN" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Registered Company Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter company address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="directorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Director's Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter director's full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="businessType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Business Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select business type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="sole_trader">Sole Trader</SelectItem>
+                          <SelectItem value="partnership">Partnership</SelectItem>
+                          <SelectItem value="limited_company">Limited Company</SelectItem>
+                          <SelectItem value="trust">Trust</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Submit KYB Application</Button>
+              </form>
+            </Form>
+          )}
         </CardContent>
       </Card>
     </div>

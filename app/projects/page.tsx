@@ -11,6 +11,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ProjectForm } from "@/components/ProjectForm"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Mock data for projects
 const projects = [
@@ -62,6 +63,8 @@ export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("All Projects")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedVisibility, setSelectedVisibility] = useState("all");
 
   const handleCreateProject = (data: any) => {
     console.log("New project data:", data)
@@ -72,8 +75,8 @@ export default function ProjectsPage() {
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          project.location.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTab = activeTab === "All Projects" || project.status === activeTab
-    return matchesSearch && matchesTab
+    const matchesStatus = selectedStatus === "all" || project.status.toLowerCase().replace(/ /g, "_") === selectedStatus;
+    return matchesSearch && matchesStatus;
   })
 
   return (
@@ -114,17 +117,32 @@ export default function ProjectsPage() {
         </Button>
       </div>
 
-      <div className="flex overflow-x-auto space-x-4 border-b pb-2">
-        {["All Projects", "In Progress", "Tendering Phase", "On Hold", "Completed"].map((tab) => (
-          <Button
-            key={tab}
-            variant="ghost"
-            className={`flex-shrink-0 ${activeTab === tab ? "border-b-2 border-primary" : ""}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </Button>
-        ))}
+      <div className="flex space-x-4">
+        <Select defaultValue="all" onValueChange={setSelectedStatus}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Projects</SelectItem>
+            <SelectItem value="in_progress">In Progress</SelectItem>
+            <SelectItem value="in_preparation">In Preparation</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="on_hold">On Hold</SelectItem>
+            <SelectItem value="tendering_phase">Tendering Phase</SelectItem>
+
+          </SelectContent>
+        </Select>
+
+        <Select defaultValue="all" onValueChange={setSelectedVisibility}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by visibility" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Projects</SelectItem>
+            <SelectItem value="public">Public</SelectItem>
+            <SelectItem value="private">Private</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
