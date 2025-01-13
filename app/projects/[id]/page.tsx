@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ChartContainer, LineChartComponent } from "@/components/ui/chart"
+import { ChartContainer, LineChartComponent } from "@/components/chart"
 import { MapPin, Calendar, DollarSign, Clock, FileText, Users, Building, CheckCircle, Upload, Download, Image, Plus } from 'lucide-react'
 
 // Mock data for a comprehensive project view
@@ -103,8 +103,8 @@ export default function ProjectDetailsPage() {
         <Badge
           variant={
             project.status === "In Progress" ? "default" :
-            project.status === "Completed" ? "success" :
-            "secondary"
+            project.status === "Completed" ? "secondary" :
+            "outline"
           }
           className="text-sm md:text-base"
         >
@@ -237,9 +237,9 @@ export default function ProjectDetailsPage() {
                       <TableCell>{tender.name}</TableCell>
                       <TableCell>
                         <Badge variant={
-                          tender.status === "Completed" ? "success" :
+                          tender.status === "Completed" ? "secondary" :
                           tender.status === "In Progress" ? "default" :
-                          "secondary"
+                          "outline"
                         }>
                           {tender.status}
                         </Badge>
@@ -367,7 +367,7 @@ export default function ProjectDetailsPage() {
                       <TableCell>
                         <Badge variant={
                           risk.impact === "High" ? "destructive" :
-                          risk.impact === "Medium" ? "warning" :
+                          risk.impact === "Medium" ? "secondary" :
                           "default"
                         }>
                           {risk.impact}

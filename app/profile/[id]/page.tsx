@@ -12,9 +12,11 @@ import { Separator } from "@/components/ui/separator"
 import { Star, MapPin, Phone, Mail, Globe, Calendar, Users, CheckCircle2 } from 'lucide-react'
 import Image from 'next/image'
 import { profiles } from '@/data/profiles'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
   const [profile, setProfile] = useState<any>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
 
   useEffect(() => {
     // In a real application, you would fetch the profile data from an API
@@ -28,16 +30,16 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
 
   return (
     <div className="container mx-auto p-8 space-y-8">
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between items-center mb-4">
         <Button variant="outline" asChild>
           <Link href="/profiles">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Profiles
           </Link>
         </Button>
-        <div>
+        <div className="flex space-x-2">
           {parseInt(params.id) > 1 && (
-            <Button variant="outline" asChild className="mr-2">
+            <Button variant="outline" asChild>
               <Link href={`/profile/${parseInt(params.id) - 1}`}>
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Previous
@@ -52,6 +54,35 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               </Link>
             </Button>
           )}
+          <div className="flex items-center space-x-2">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="supplier">Supplier</SelectItem>
+                <SelectItem value="buyer">Buyer</SelectItem>
+                <SelectItem value="contractor">Contractor</SelectItem>
+                <SelectItem value="consultant">Consultant</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                if (selectedCategory) {
+                  // Add logic to add user to management list under the selected category
+                  console.log(`Adding user to ${selectedCategory} category`);
+                  // You would typically call an API or update your state here
+                } else {
+                  // Show an error or alert if no category is selected
+                  console.log("Please select a category first");
+                }
+              }}
+              disabled={!selectedCategory}
+            >
+              Add to User Management
+            </Button>
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-between">

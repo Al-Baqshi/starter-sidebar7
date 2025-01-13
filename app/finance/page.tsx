@@ -21,7 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { BudgetChart } from "@/components/finance/BudgetChart"
+import { TransactionList } from "@/components/finance/TransactionList"
 
+// TODO: Implement API integration
+// - Fetch financial data from the backend
+// - Update state with fetched data
+// - Handle form submissions (create invoice, escrow, demand, supply)
+// - Implement real-time updates for financial data
 
 export default function FinancePage() {
   return (
@@ -147,20 +154,15 @@ export default function FinancePage() {
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold">Budget Utilization</h3>
               <p className="text-sm text-muted-foreground">Overall budget usage across all projects</p>
-              <div className="mt-4">
-                <div className="relative h-4 w-full overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full bg-primary transition-all"
-                    style={{ width: "65%" }}
-                  />
-                </div>
-                <div className="mt-2 flex justify-between text-sm">
-                  <span>$0</span>
-                  <span>$10,000,000</span>
-                </div>
-              </div>
+              <BudgetChart />
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="project-budgets">
+          {/* TODO: Implement project budgets view */}
+        </TabsContent>
+        <TabsContent value="recent-transactions">
+          <TransactionList />
         </TabsContent>
       </Tabs>
     </div>

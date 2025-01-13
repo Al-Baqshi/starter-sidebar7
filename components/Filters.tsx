@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { BulkActionForm } from "./BulkActionForm"
+import { toast } from "@/components/ui/use-toast"
 
 interface FiltersProps {
   users: any[]
@@ -33,6 +35,8 @@ export function Filters({
   const [selectedRole, setSelectedRole] = useState('all')
   const [selectedEntity, setSelectedEntity] = useState('all')
   const [targetCategory, setTargetCategory] = useState('')
+  const [showBulkActions, setShowBulkActions] = useState(false)
+  const [bulkActionType, setBulkActionType] = useState<string[]>([])
 
   const applyFilters = () => {
     const filtered = users.filter((user) => {
@@ -44,6 +48,19 @@ export function Filters({
       return matchesSearch && matchesCategory && matchesRole && matchesEntity
     })
     setFilteredUsers(filtered)
+  }
+
+  const handleBulkActionSubmit = (emailSubject: string, emailMessage: string, smsMessage: string, notificationMessage: string) => {
+    // Placeholder for handling bulk actions
+    console.log("Email Subject:", emailSubject)
+    console.log("Email Message:", emailMessage)
+    console.log("SMS Message:", smsMessage)
+    console.log("Notification Message:", notificationMessage)
+    toast({
+      title: "Bulk actions sent",
+      description: "The bulk actions have been processed.",
+    })
+    setShowBulkActions(false)
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +92,24 @@ export function Filters({
           onChange={handleSearch}
           className="w-full sm:w-auto"
         />
+        <Button onClick={() => setShowBulkActions(true)} disabled={selectedUsers.length === 0}>
+          Bulk Actions
+        </Button>
+        {showBulkActions && (
+          <Dialog open={showBulkActions} onOpenChange={setShowBulkActions}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Bulk Actions</DialogTitle>
+              </DialogHeader>
+              <BulkActionForm
+                onSubmit={handleBulkActionSubmit}
+                selectedCount={selectedUsers.length}
+                bulkActionType={bulkActionType}
+                setBulkActionType={setBulkActionType}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
       <div className="flex justify-end">
         <Dialog>

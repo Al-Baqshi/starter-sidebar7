@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Download, BarChart, PieChart, TrendingUp, Zap, FileText, Calendar, DollarSign, AlertTriangle, Filter, Plus, Users } from 'lucide-react'
-import { ChartContainer, LineChartComponent, PieChartComponent, BarChartComponent } from "@/components/ui/chart"
+import { ChartContainer, LineChartComponent, PieChartComponent, BarChartComponent } from "@/components/chart"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
@@ -136,7 +136,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Monthly comparison of budgeted vs. actual project expenses</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer config={{ type: 'line' }}>
+              <ChartContainer>
                 <LineChartComponent
                   data={projectInsightsData}
                   categories={["Budget", "Actual"]}
@@ -152,7 +152,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Overview of task completion across the project</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer config={{ type: 'pie' }}>
+              <ChartContainer>
                 <PieChartComponent data={taskCompletionData} />
               </ChartContainer>
             </CardContent>
@@ -166,7 +166,7 @@ export default function ReportsAndAnalytics() {
               <CardDescription>Key financial metrics for the current project</CardDescription>
             </CardHeader>
             <CardContent className="h-[400px]">
-              <ChartContainer config={{ type: 'bar' }}>
+              <ChartContainer>
                 <BarChartComponent data={financialMetricsData} />
               </ChartContainer>
             </CardContent>

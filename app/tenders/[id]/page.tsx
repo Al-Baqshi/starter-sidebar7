@@ -128,7 +128,7 @@ export default function TenderDetailPage({ params }: { params: { id: string } })
 
       <div className="mt-4">
         <Button variant="outline" asChild>
-          <Link href={`/tenders/${tender.id}/soq-viewer`}>View SOQ</Link>
+          <Link href={`/soq/bidder?tenderId=${tender.id}`}>View SOQ</Link>
         </Button>
       </div>
 

@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  //DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Filters } from './Filters'
 import { UserDetails } from './UserDetails'
@@ -346,28 +346,16 @@ export function UserList() {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setSelectedUserForDetails(user)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            {user.role && (
-                              <DropdownMenuItem onSelect={() => {
-                                setSelectedUserForEdit(user)
-                                setIsEditDialogOpen(true)
-                              }}>
-                                <UserCog className="mr-2 h-4 w-4" />
-                                Edit User
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex justify-end space-x-2">
+                          <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
+                            View Details
+                          </Button>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link href={`/profiles/${user.id}`}>
+                              Visit Profile
+                            </Link>
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -423,26 +411,16 @@ export function UserList() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setSelectedUserForDetails(user)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={() => {
-                              setSelectedUserForEdit(user)
-                              setIsEditDialogOpen(true)
-                            }}>
-                              <UserCog className="mr-2 h-4 w-4" />
-                              Edit User
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex justify-end space-x-2">
+                          <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
+                            View Details
+                          </Button>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link href={`/profiles/${user.id}`}>
+                              Visit Profile
+                            </Link>
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -502,19 +480,16 @@ export function UserList() {
                             </span>
                           </TableCell>
                           <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setSelectedUserForDetails(user)}>
-                                  <Eye className="mr-2 h-4 w-4" />
-                                  View Details
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <div className="flex justify-end space-x-2">
+                              <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
+                                View Details
+                              </Button>
+                              <Button variant="outline" size="sm" asChild>
+                                <Link href={`/profiles/${user.id}`}>
+                                  Visit Profile
+                                </Link>
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}

@@ -9,7 +9,7 @@ import { useTheme } from "next-themes"
 export function ChartContainer({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactElement
 }) {
   const { theme: applicationTheme } = useTheme()
 
@@ -28,9 +28,16 @@ interface LineChartProps {
   colors?: string[]
 }
 
+interface TooltipData {
+  x: number
+  y: number
+  value: number
+  payload: Record<string, any>
+}
+
 export function LineChartComponent({ data, categories, colors = ["#2563eb", "#16a34a"] }: LineChartProps) {
   const { theme: applicationTheme } = useTheme()
-  const [tooltipData, setTooltipData] = React.useState<any>()
+  const [tooltipData, setTooltipData] = React.useState<TooltipData[]>()
   const [activeIndex, setActiveIndex] = React.useState<number>()
 
   return (

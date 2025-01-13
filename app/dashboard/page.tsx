@@ -1,8 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarChart, Clock, DollarSign, Users } from 'lucide-react'
+import { OverviewCard } from "@/components/dashboard/overview-card"
+import { RecentActivityList } from "@/components/dashboard/recent-activity-list"
+
+// TODO: Implement API integration
+// - Fetch dashboard data from the backend
+// - Update state with fetched data
+// - Handle loading and error states
 
 export default function DashboardPage() {
+// Mock data - replace with actual API call
+const overviewData = [
+  { title: "Total Revenue", value: "$45,231.89", icon: DollarSign, change: "+20.1% from last month" },
+  { title: "Active Projects", value: "12", icon: BarChart, change: "+2 new this month" },
+  { title: "Team Members", value: "24", icon: Users, change: "+4 new hires" },
+  { title: "Avg. Project Duration", value: "3.2 months", icon: Clock, change: "-2 weeks from last quarter" },
+]
+
   return (
     <div className="container space-y-8 p-8">
       <div className="flex items-center justify-between">
@@ -11,49 +26,11 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+2 new this month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <p className="text-xs text-muted-foreground">+4 new hires</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Project Duration</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3.2 months</div>
-            <p className="text-xs text-muted-foreground">-2 weeks from last quarter</p>
-          </CardContent>
-        </Card>
+        {overviewData.map((item, index) => (
+          <OverviewCard key={index} {...item} />
+        ))}
       </div>
 
-      {/* Placeholder for future charts or tables */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
@@ -68,7 +45,7 @@ export default function DashboardPage() {
             <CardTitle>Recent Activities</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] bg-muted" />
+            <RecentActivityList />
           </CardContent>
         </Card>
       </div>

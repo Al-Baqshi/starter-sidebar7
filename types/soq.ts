@@ -1,44 +1,40 @@
-export interface MaterialItem {
+export interface Material {
   id: string;
-  itemDescription: string;
+  description: string;
   unit: string;
   estimatedQuantity: number;
-  bidderQuantity: number;
   unitRate: number;
   totalCost: number;
-  attachments: number;
+  attachments: string[];
   productLink: string;
 }
 
-export interface LaborItem {
+export interface Labor {
   id: string;
-  laborDescription: string;
+  description: string;
   estimatedStaff: number;
-  bidderStaff: number;
   estimatedHours: number;
-  bidderHours: number;
   hourlyRate: number;
   totalCost: number;
-  notes: number;
+  notes: string[];
 }
 
-export interface Job {
+export interface SOQJob {
   id: string;
-  jobId: string;
+  number: string;
   name: string;
   description: string;
-  materials: MaterialItem[];
-  labor: LaborItem[];
-  status: 'draft' | 'ready';
-  includedInTender: boolean;
+  status: 'draft' | 'tender_created' | 'linked_to_tender';
+  materials: Material[];
+  labor: Labor[];
+  totalMaterialsCost: number;
+  totalLaborCost: number;
   totalCost: number;
 }
 
-export interface Tender {
+export interface SOQCategory {
   id: string;
   name: string;
-  description: string;
-  jobs: string[]; // Array of job IDs
-  status: 'draft' | 'submitted' | 'awarded';
+  jobs: SOQJob[];
 }
 

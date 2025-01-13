@@ -83,8 +83,7 @@ export const mockUsers: User[] = [
     entity: 'TechCorp',
     kycStatus: 'Verified',
     industry: 'Technology',
-    role: 'Project Manager',
-    category: ""
+    role: 'Project Manager'
   },
 ];
 
