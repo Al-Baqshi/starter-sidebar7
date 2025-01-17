@@ -4,19 +4,22 @@ import * as React from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Pie, PieChart, Cell, Legend, BarChart, Bar } from "recharts"
 
 import { Card } from "@/components/ui/card"
+import { ThemeProvider } from "@/components/theme-provider" // Import ThemeProvider
 import { useTheme } from "next-themes"
 
 export function ChartContainer({
   children,
 }: {
-  children: React.ReactElement
+  children: React.ReactNode
 }) {
-  const { theme: applicationTheme } = useTheme()
+  // const { theme: applicationTheme } = useTheme() // Removed as theme is now handled by ThemeProvider
 
   return (
     <Card className="p-4">
       <ResponsiveContainer width="100%" height={350}>
-        {children}
+        <ThemeProvider> {/* Wrap the children with ThemeProvider */}
+          {children}
+        </ThemeProvider>
       </ResponsiveContainer>
     </Card>
   )
@@ -28,16 +31,9 @@ interface LineChartProps {
   colors?: string[]
 }
 
-interface TooltipData {
-  x: number
-  y: number
-  value: number
-  payload: Record<string, any>
-}
-
 export function LineChartComponent({ data, categories, colors = ["#2563eb", "#16a34a"] }: LineChartProps) {
   const { theme: applicationTheme } = useTheme()
-  const [tooltipData, setTooltipData] = React.useState<TooltipData[]>()
+  const [tooltipData, setTooltipData] = React.useState<any>()
   const [activeIndex, setActiveIndex] = React.useState<number>()
 
   return (

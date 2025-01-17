@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { AttachmentInput } from "@/components/AttachmentInput"
+import { CategoryHeader } from "@/components/CategoryHeader"
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
@@ -153,13 +154,23 @@ export default function SOQPage() {
     }
   }
 
-  const toggleCategory = (categoryId: string) => {
+  const handleCategoryToggle = useCallback((categoryId: string) => {
     setExpandedCategories(prev =>
       prev.includes(categoryId)
         ? prev.filter(id => id !== categoryId)
         : [...prev, categoryId]
     )
-  }
+  }, [])
+
+  const handleTitleChange = useCallback((categoryId: string, newTitle: string) => {
+    setCategories(prev =>
+      prev.map(category =>
+        category.id === categoryId
+          ? { ...category, name: newTitle }
+          : category
+      )
+    )
+  }, [])
 
   const toggleJob = (jobId: string) => {
     setExpandedJobs(prev =>
@@ -347,77 +358,28 @@ export default function SOQPage() {
 
       <div className="space-y-4">
         {categories.map(category => (
-          <Card key={category.id} className="p-4 bg-background border-border">
-            <Collapsible
-              open={expandedCategories.includes(category.id)}
-              onOpenChange={() => toggleCategory(category.id)}
-            >
-              <CollapsibleTrigger asChild>
-                <div
-                  className="flex w-full items-center justify-between cursor-pointer p-4 hover:bg-muted/50 rounded-md"
-                >
-                  <div className="flex items-center space-x-2">
-                    {editingTitleId === category.id ? (
-                      <Input
-                        value={category.name}
-                        onChange={(e) => {
-                          toggleEditMode(category.id, 'category', e.target.value);
-                        }}
-                        onBlur={() => setEditingTitleId(null)}
-                        autoFocus
-                        className="text-xl font-semibold"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    ) : (
-                      <h2 className="text-xl font-semibold">{category.name}</h2>
-                    )}
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingTitleId(category.id);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <UsersIcon className="mr-2 h-4 w-4" />
-                      Invite Users
-                    </Button>
-                    <Button 
-                      variant="secondary" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsJobWizardOpen(true);
-                      }}
-                    >
-                      <FilePlusIcon className="mr-2 h-4 w-4" />
-                      Create Job Wizard
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <UploadIcon className="mr-2 h-4 w-4" />
-                      Upload Documents
-                    </Button>
-                    {expandedCategories.includes(category.id) ? (
-                      <ChevronUpIcon className="h-4 w-4" />
-                    ) : (
-                      <ChevronDownIcon className="h-4 w-4" />
-                    )}
-                  </div>
-                </div>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-4 space-y-4">
+          <Collapsible
+            key={category.id}
+            open={expandedCategories.includes(category.id)}
+            onOpenChange={() => handleCategoryToggle(category.id)}
+          >
+            <Card className="overflow-hidden">
+              <CategoryHeader
+                title={category.name}
+                isExpanded={expandedCategories.includes(category.id)}
+                onToggle={() => handleCategoryToggle(category.id)}
+                onTitleChange={(newTitle) => handleTitleChange(category.id, newTitle)}
+                onInviteUsers={() => {
+                  // Implement invite users logic
+                }}
+                onCreateJob={() => {
+                  // Implement create job wizard logic
+                }}
+                onUploadDocuments={() => {
+                  // Implement upload documents logic
+                }}
+              />
+              <CollapsibleContent className="p-4">
                 <div className="space-y-2 mt-2">
                   <span className="font-medium">Category Description:</span>
                   <div className="flex items-center gap-2">
@@ -661,9 +623,10 @@ export default function SOQPage() {
                   >
                     <CollapsibleTrigger asChild>
                       <div
-                        className="flex w-full items-center justify-between p-4 rounded-md cursor-pointer hover:bg-blue-600 bg-blue-700 text-white"
+                        className="flex w-full items-center justify-between p-2 rounded-md cursor-pointer bg-blue-700 text-white mb-4"
+                        onClick={() => toggleJob(job.id)}
                       >
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 text-gray-800">
                           {editingTitleId === job.id ? (
                             <Input
                               value={job.name}
@@ -672,169 +635,153 @@ export default function SOQPage() {
                               }}
                               onBlur={() => setEditingTitleId(null)}
                               autoFocus
-                              className="text-lg font-medium bg-blue-600 text-white placeholder:text-white/70"
-                              onClick={(e) => e.stopPropagation()}
+                              className="text-lg font-medium"
                             />
                           ) : (
                             <h3 className="text-lg font-medium">{truncateText(job.name, 150)}</h3>
                           )}
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingTitleId(job.id);
-                            }}
-                            className="text-white hover:bg-blue-600"
-                          >
+                          <Button variant="ghost" size="sm" onClick={() => setEditingTitleId(job.id)}>
                             <Pencil className="h-4 w-4" />
                           </Button>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge 
-                            variant={job.status === 'draft' ? 'secondary' : 'default'}
-                            className="mr-2"
-                          >
-                            {job.status.replace('_', ' ').toUpperCase()}
-                          </Badge>
-                          {expandedJobs.includes(job.id) ? (
-                            <ChevronUpIcon className="h-4 w-4" />
-                          ) : (
-                            <ChevronDownIcon className="h-4 w-4" />
-                          )}
-                        </div>
+                        {expandedJobs.includes(job.id) ?
+                          <ChevronUpIcon className="h-4 w-4" /> :
+                          <ChevronDownIcon className="h-4 w-4" />
+                        }
                       </div>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4 pl-4 space-y-4">
+                    <CollapsibleContent className="mt-4 pl-4">
                       <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">Description:</span>
-                          {editingDescriptionId === job.id ? (
-                            <div className="flex items-center space-x-2">
-                              <Input
-                                value={job.description}
-                                onChange={(e) => {
-                                  const updatedCategories = categories.map(c => ({
-                                    ...c,
-                                    jobs: c.jobs.map(j =>
-                                      j.id === job.id ? { ...j, description: e.target.value } : j
-                                    )
-                                  }));
-                                  setCategories(updatedCategories);
-                                }}
-                                className="flex-grow"
-                              />
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => {
-                                  setEditingDescriptionId(null);
-                                  setDescriptionSaved(prev => ({ ...prev, [job.id]: true }));
-                                }}
-                              >
-                                Save
-                              </Button>
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium">Description:</span>
+                            {editingDescriptionId === job.id ? (
+                              <div className="flex items-center space-x-2">
+                                <Input
+                                  value={job.description}
+                                  onChange={(e) => {
+                                    const updatedCategories = categories.map(c => ({
+                                      ...c,
+                                      jobs: c.jobs.map(j =>
+                                        j.id === job.id ? { ...j, description: e.target.value } : j
+                                      )
+                                    }));
+                                    setCategories(updatedCategories);
+                                  }}
+                                  className="flex-grow"
+                                />
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    setEditingDescriptionId(null);
+                                    setDescriptionSaved(prev => ({ ...prev, [job.id]: true }));
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            ) : (
+                              <>
+                                <span>{truncateText(job.description, 150)}</span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    setEditingDescriptionId(job.id);
+                                    setDescriptionSaved(prev => ({ ...prev, [job.id]: false }));
+                                  }}
+                                >
+                                  {descriptionSaved[job.id] ? 'Edit' : 'Save'}
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-medium mb-2">Materials</h4>
+                          <MaterialsTable job={job} categories={categories} setCategories={setCategories} editableMaterials={editableMaterials} setEditableMaterials={setEditableMaterials} isMaterialSaved={(materialId) => job.materials.find(m => m.id === materialId)?.saved ?? false}/>
+                          <Button
+                            onClick={() => {
+                              const newMaterial: Material = {
+                                id: Date.now().toString(),
+                                description: "",
+                                unit: "",
+                                estimatedQuantity: 0,
+                                unitRate: 0,
+                                totalCost: 0,
+                                attachments: [],
+                                productLink: "",
+                                saved: false
+                              };
+                              job.materials.push(newMaterial);
+                              setCategories([...categories]);
+                              setEditableMaterials(prev => ({ ...prev, [newMaterial.id]: true }));
+                            }}
+                            className="mt-2"
+                          >
+                            Add Material
+                          </Button>
+                        </div>
+                        <div>
+                          <h4 className="font-medium mb-2">Labor</h4>
+                          <LaborTable 
+                            job={job} 
+                            categories={categories} 
+                            setCategories={setCategories} 
+                            editableLabor={editableLabor} 
+                            setEditableLabor={setEditableLabor}
+                            isSaved={(laborId) => job.labor.find(l => l.id === laborId)?.saved ?? false}
+                          />
+                          <Button
+                            onClick={() => {
+                              const newLabor: Labor = {
+                                id: Date.now().toString(),
+                                description: "",
+                                estimatedStaff: 0,
+                                estimatedHours: 0,
+                                hourlyRate: 0,
+                                totalCost: 0,
+                                notes: [],
+                                saved: false
+                              };
+                              job.labor.push(newLabor);
+                              setCategories([...categories]);
+                              setEditableLabor(prev => ({ ...prev, [newLabor.id]: true }));
+                            }}
+                            className="mt-2"
+                          >
+                            Add Labor
+                          </Button>
+                        </div>
+                        <div className="bg-secondary p-4 rounded-md">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="font-medium">Total Materials Cost:</p>
+                              <p>${job.materials.reduce((sum, material) => sum + material.totalCost, 0).toFixed(2)}</p>
                             </div>
-                          ) : (
-                            <>
-                              <span>{truncateText(job.description, 150)}</span>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => {
-                                  setEditingDescriptionId(job.id);
-                                  setDescriptionSaved(prev => ({ ...prev, [job.id]: false }));
-                                }}
-                              >
-                                {descriptionSaved[job.id] ? 'Edit' : 'Save'}
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-medium mb-2">Materials</h4>
-                        <MaterialsTable job={job} categories={categories} setCategories={setCategories} editableMaterials={editableMaterials} setEditableMaterials={setEditableMaterials} isMaterialSaved={(materialId) => job.materials.find(m => m.id === materialId)?.saved ?? false}/>
-                        <Button
-                          onClick={() => {
-                            const newMaterial: Material = {
-                              id: Date.now().toString(),
-                              description: "",
-                              unit: "",
-                              estimatedQuantity: 0,
-                              unitRate: 0,
-                              totalCost: 0,
-                              attachments: [],
-                              productLink: "",
-                              saved: false
-                            };
-                            job.materials.push(newMaterial);
-                            setCategories([...categories]);
-                            setEditableMaterials(prev => ({ ...prev, [newMaterial.id]: true }));
-                          }}
-                          className="mt-2"
-                        >
-                          Add Material
-                        </Button>
-                      </div>
-                      <div>
-                        <h4 className="font-medium mb-2">Labor</h4>
-                        <LaborTable 
-                          job={job} 
-                          categories={categories} 
-                          setCategories={setCategories} 
-                          editableLabor={editableLabor} 
-                          setEditableLabor={setEditableLabor}
-                          isSaved={(laborId) => job.labor.find(l => l.id === laborId)?.saved ?? false}
-                        />
-                        <Button
-                          onClick={() => {
-                            const newLabor: Labor = {
-                              id: Date.now().toString(),
-                              description: "",
-                              estimatedStaff: 0,
-                              estimatedHours: 0,
-                              hourlyRate: 0,
-                              totalCost: 0,
-                              notes: [],
-                              saved: false
-                            };
-                            job.labor.push(newLabor);
-                            setCategories([...categories]);
-                            setEditableLabor(prev => ({ ...prev, [newLabor.id]: true }));
-                          }}
-                          className="mt-2"
-                        >
-                          Add Labor
-                        </Button>
-                      </div>
-                      <div className="bg-secondary p-4 rounded-md">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="font-medium">Total Materials Cost:</p>
-                            <p>${job.materials.reduce((sum, material) => sum + material.totalCost, 0).toFixed(2)}</p>
+                            <div>
+                              <p className="font-medium">Total Labor Cost:</p>
+                              <p>${job.labor.reduce((sum, labor) => sum + labor.totalCost, 0).toFixed(2)}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium">Total Labor Cost:</p>
-                            <p>${job.labor.reduce((sum, labor) => sum + labor.totalCost, 0).toFixed(2)}</p>
+                          <div className="mt-4">
+                            <p className="font-medium">Total Job Cost:</p>
+                            <p className="text-lg">
+                              ${(
+                                job.materials.reduce((sum, material) => sum + material.totalCost, 0) +
+                                job.labor.reduce((sum, labor) => sum + labor.totalCost, 0)
+                              ).toFixed(2)}
+                            </p>
                           </div>
-                        </div>
-                        <div className="mt-4">
-                          <p className="font-medium">Total Job Cost:</p>
-                          <p className="text-lg">
-                            ${(
-                              job.materials.reduce((sum, material) => sum + material.totalCost, 0) +
-                              job.labor.reduce((sum, labor) => sum + labor.totalCost, 0)
-                            ).toFixed(2)}
-                          </p>
                         </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
                 ))}
               </CollapsibleContent>
-            </Collapsible>
-          </Card>
+            </Card>
+          </Collapsible>
         ))}
       </div>
 
@@ -1141,7 +1088,7 @@ function MaterialsTable({ job, categories, setCategories, editableMaterials, set
                   <span>{material.unitRate}</span>
                 )}
               </td>
-              <td className="p-2 font-medium">${material.totalCost.toFixed(2)}</td>
+              <td className="p-2 font-medium">${new Intl.NumberFormat('en-US').format(material.totalCost)}</td>
               <td className="p-2">
                 <Dialog open={attachmentDialog.isOpen && attachmentDialog.materialId === material.id}>
                   <DialogTrigger asChild>
@@ -1244,14 +1191,14 @@ function MaterialsTable({ job, categories, setCategories, editableMaterials, set
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      if (isMaterialSaved(material.id)) {
-                        toggleEditMode(material.id);
-                      } else {
+                      if (editableMaterials[material.id]) {
                         saveMaterial(material);
+                      } else {
+                        toggleEditMode(material.id);
                       }
                     }}
                   >
-                    {isMaterialSaved(material.id) ? <Pencil className="h-4 w-4" /> : 'Save'}
+                    {editableMaterials[material.id] ? 'Save' : 'Edit'}
                   </Button>
                   <AlertDialog open={deleteConfirmation.isOpen} onOpenChange={(isOpen) => setDeleteConfirmation({ isOpen, materialId: null })}>
                     <AlertDialogTrigger asChild>
@@ -1294,19 +1241,20 @@ function MaterialsTable({ job, categories, setCategories, editableMaterials, set
 
 function LaborTable({ job, categories, setCategories, editableLabor, setEditableLabor, isSaved }: { job: SOQJob; categories: SOQCategory[]; setCategories: React.Dispatch<React.SetStateAction<SOQCategory[]>>; editableLabor: { [key: string]: boolean }; setEditableLabor: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>; isSaved: (laborId: string) => boolean }) {
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ isOpen: boolean; laborId: string | null }>({ isOpen: false, laborId: null });
-  
-  const saveLabor = (labor: Labor) => {
-    setCategories(prevCategories => 
+  const [notesDialog, setNotesDialog] = useState<{ isOpen: boolean; laborId: string | null }>({ isOpen: false, laborId: null });
+
+  const saveLabor = (laborItem: Labor) => {
+    setCategories(prevCategories =>
       prevCategories.map(category => ({
         ...category,
-        jobs: category.jobs.map(j => 
-          j.id === job.id 
-            ? { ...j, labor: j.labor.map(l => l.id === labor.id ? { ...labor, saved: true } : l) }
+        jobs: category.jobs.map(j =>
+          j.id === job.id
+            ? { ...j, labor: j.labor.map(l => l.id === laborItem.id ? { ...laborItem, saved: true } : l) }
             : j
         )
       }))
     );
-    setEditableLabor(prev => ({ ...prev, [labor.id]: false }));
+    setEditableLabor(prev => ({ ...prev, [laborItem.id]: false }));
   };
 
   const toggleEditMode = (laborId: string) => {
@@ -1341,23 +1289,23 @@ function LaborTable({ job, categories, setCategories, editableLabor, setEditable
           </tr>
         </thead>
         <tbody>
-          {job.labor.map((labor, index) => (
-            <tr key={labor.id} className="border-b">
+          {job.labor.map((laborItem, index) => (
+            <tr key={laborItem.id} className="border-b">
               <td className="p-2">
                 <div className="flex items-center gap-2">
-                  {editableLabor[labor.id] ? (
+                  {editableLabor[laborItem.id] ? (
                     <Input
-                      value={labor.description}
+                      value={laborItem.description}
                       onChange={(e) => {
-                        labor.description = e.target.value;
+                        laborItem.description = e.target.value;
                         setCategories([...categories]);
                       }}
-                      onKeyDown={(e) => handleKeyDown(e, labor, 'description')}
+                      onKeyDown={(e) => handleKeyDown(e, laborItem, 'description')}
                       className="border-0 bg-transparent focus-visible:ring-0 text-sm"
                       placeholder="Enter description"
                     />
                   ) : (
-                    <div className="text-sm">{truncateText(labor.description, 150)}</div>
+                    <div className="text-sm">{truncateText(laborItem.description, 150)}</div>
                   )}
                   <Dialog>
                     <DialogTrigger asChild>
@@ -1370,14 +1318,14 @@ function LaborTable({ job, categories, setCategories, editableLabor, setEditable
                         <DialogTitle>Labor Description</DialogTitle>
                       </DialogHeader>
                       <Textarea
-                        value={labor.description}
+                        value={laborItem.description}
                         onChange={(e) => {
-                          labor.description = e.target.value;
+                          laborItem.description = e.target.value;
                           setCategories([...categories]);
                         }}
                         className="min-h-[200px]"
                         placeholder="Enter detailed description"
-                        disabled={!editableLabor[labor.id]}
+                        disabled={!editableLabor[laborItem.id]}
                       />
                     </DialogContent>
                   </Dialog>
@@ -1386,51 +1334,74 @@ function LaborTable({ job, categories, setCategories, editableLabor, setEditable
               <td className="p-2">
                 <Input
                   type="number"
-                  value={labor.estimatedStaff || ''}
+                  value={laborItem.estimatedStaff || ''}
                   onChange={(e) => {
-                    labor.estimatedStaff = Number(e.target.value);
-                    labor.totalCost = labor.estimatedStaff * labor.estimatedHours * labor.hourlyRate;
+                    laborItem.estimatedStaff = Number(e.target.value);
+                    laborItem.totalCost = laborItem.estimatedStaff * laborItem.estimatedHours * laborItem.hourlyRate;
                     setCategories([...categories]);
                   }}
-                  onKeyDown={(e) => handleKeyDown(e, labor, 'estimatedStaff')}
+                  onKeyDown={(e) => handleKeyDown(e, laborItem, 'estimatedStaff')}
                   className="border-0 bg-transparent focus-visible:ring-0"
                   placeholder="0"
+                  disabled={!editableLabor[laborItem.id]}
                 />
               </td>
               <td className="p-2">
                 <Input
                   type="number"
-                  value={labor.estimatedHours || ''}
+                  value={laborItem.estimatedHours || ''}
                   onChange={(e) => {
-                    labor.estimatedHours = Number(e.target.value);
-                    labor.totalCost = labor.estimatedStaff * labor.estimatedHours * labor.hourlyRate;
+                    laborItem.estimatedHours = Number(e.target.value);
+                    laborItem.totalCost = laborItem.estimatedStaff * laborItem.estimatedHours * laborItem.hourlyRate;
                     setCategories([...categories]);
                   }}
-                  onKeyDown={(e) => handleKeyDown(e, labor, 'estimatedHours')}
+                  onKeyDown={(e) => handleKeyDown(e, laborItem, 'estimatedHours')}
                   className="border-0 bg-transparent focus-visible:ring-0"
                   placeholder="0"
+                  disabled={!editableLabor[laborItem.id]}
                 />
               </td>
               <td className="p-2">
                 <Input
                   type="number"
-                  value={labor.hourlyRate || ''}
+                  value={laborItem.hourlyRate || ''}
                   onChange={(e) => {
-                    labor.hourlyRate = Number(e.target.value);
-                    labor.totalCost = labor.estimatedStaff * labor.estimatedHours * labor.hourlyRate;
+                    laborItem.hourlyRate = Number(e.target.value);
+                    laborItem.totalCost = laborItem.estimatedStaff * laborItem.estimatedHours * laborItem.hourlyRate;
                     setCategories([...categories]);
                   }}
-                  onKeyDown={(e) => handleKeyDown(e, labor, 'hourlyRate')}
+                  onKeyDown={(e) => handleKeyDown(e, laborItem, 'hourlyRate')}
                   className="border-0 bg-transparent focus-visible:ring-0"
                   placeholder="0"
+                  disabled={!editableLabor[laborItem.id]}
                 />
               </td>
-              <td className="p-2 font-medium">${labor.totalCost.toFixed(2)}</td>
+              <td className="p-2 font-medium">${new Intl.NumberFormat('en-US').format(laborItem.totalCost)}</td>
               <td className="p-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  {labor.notes.length || 0}
-                </Button>
+                <Dialog open={notesDialog.isOpen && notesDialog.laborId === laborItem.id} onOpenChange={(isOpen) => setNotesDialog({ isOpen, laborId: isOpen ? laborItem.id : null })}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      {laborItem.notes.length || 0}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-background border-border">
+                    <DialogHeader>
+                      <DialogTitle>Labor Notes</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Textarea
+                        value={laborItem.notes.join('\n')}
+                        onChange={(e) => {
+                          laborItem.notes = e.target.value.split('\n');
+                          setCategories([...categories]);
+                        }}
+                        className="min-h-[200px]"
+                        placeholder="Enter notes (one per line)"
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </td>
               <td className="p-2">
                 <div className="flex space-x-1">
@@ -1438,21 +1409,21 @@ function LaborTable({ job, categories, setCategories, editableLabor, setEditable
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      if (isSaved(labor.id)) {
-                        toggleEditMode(labor.id);
+                      if (editableLabor[laborItem.id]) {
+                        saveLabor(laborItem);
                       } else {
-                        saveLabor(labor);
+                        toggleEditMode(laborItem.id);
                       }
                     }}
                   >
-                    {isSaved(labor.id) ? <Pencil className="h-4 w-4" /> : 'Save'}
+                    {editableLabor[laborItem.id] ? 'Save' : 'Edit'}
                   </Button>
                   <AlertDialog open={deleteConfirmation.isOpen} onOpenChange={(isOpen) => setDeleteConfirmation({ isOpen, laborId: null })}>
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setDeleteConfirmation({ isOpen: true, laborId: labor.id })}
+                        onClick={() => setDeleteConfirmation({ isOpen: true, laborId: laborItem.id })}
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>

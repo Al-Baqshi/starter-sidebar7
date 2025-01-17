@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { useParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -8,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ChartContainer, LineChartComponent } from "@/components/chart"
+import { ChartContainer } from "@/components/ui/chart"
 import { MapPin, Calendar, DollarSign, Clock, FileText, Users, Building, CheckCircle, Upload, Download, Image, Plus } from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 // Mock data for a comprehensive project view
 const projectData = {
@@ -81,6 +81,21 @@ const projectData = {
   }
 }
 
+export function LineChartComponent({ data, categories, colors }) {
+  return (
+    <LineChart width={500} height={300} data={data}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="month" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      {categories.map((category, index) => (
+        <Line type="monotone" dataKey={category} stroke={colors[index]} key={category} />
+      ))}
+    </LineChart>
+  );
+}
+
 export default function ProjectDetailsPage() {
   const params = useParams()
   const projectId = params.id as string
@@ -103,8 +118,8 @@ export default function ProjectDetailsPage() {
         <Badge
           variant={
             project.status === "In Progress" ? "default" :
-            project.status === "Completed" ? "secondary" :
-            "outline"
+            project.status === "Completed" ? "success" :
+            "secondary"
           }
           className="text-sm md:text-base"
         >
@@ -202,7 +217,11 @@ export default function ProjectDetailsPage() {
               <CardContent className="h-[300px] md:h-[400px]">
                 <ChartContainer>
                   <LineChartComponent
-                    data={project.timeline}
+                    data={project.timeline.map(item => ({
+                      name: item.month,
+                      planned: item.planned,
+                      actual: item.actual
+                    }))}
                     categories={["planned", "actual"]}
                     colors={["#2563eb", "#16a34a"]}
                   />
@@ -237,9 +256,9 @@ export default function ProjectDetailsPage() {
                       <TableCell>{tender.name}</TableCell>
                       <TableCell>
                         <Badge variant={
-                          tender.status === "Completed" ? "secondary" :
+                          tender.status === "Completed" ? "success" :
                           tender.status === "In Progress" ? "default" :
-                          "outline"
+                          "secondary"
                         }>
                           {tender.status}
                         </Badge>
@@ -336,7 +355,11 @@ export default function ProjectDetailsPage() {
             <CardContent className="h-[300px] md:h-[400px]">
               <ChartContainer>
                 <LineChartComponent
-                  data={project.timeline}
+                  data={project.timeline.map(item => ({
+                    name: item.month,
+                    planned: item.planned,
+                    actual: item.actual
+                  }))}
                   categories={["planned", "actual"]}
                   colors={["#2563eb", "#16a34a"]}
                 />
@@ -367,7 +390,7 @@ export default function ProjectDetailsPage() {
                       <TableCell>
                         <Badge variant={
                           risk.impact === "High" ? "destructive" :
-                          risk.impact === "Medium" ? "secondary" :
+                          risk.impact === "Medium" ? "warning" :
                           "default"
                         }>
                           {risk.impact}

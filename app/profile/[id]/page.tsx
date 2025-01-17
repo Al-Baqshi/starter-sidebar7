@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Edit } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,20 +13,30 @@ import { Star, MapPin, Phone, Mail, Globe, Calendar, Users, CheckCircle2 } from 
 import Image from 'next/image'
 import { profiles } from '@/data/profiles'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
   const [profile, setProfile] = useState<any>(null)
   const [selectedCategory, setSelectedCategory] = useState<string>("")
 
   useEffect(() => {
-    // In a real application, you would fetch the profile data from an API
-    // For this example, we're using the mock data
     setProfile(profiles[params.id as keyof typeof profiles])
   }, [params.id])
 
   if (!profile) {
     return <div>Loading...</div>
   }
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1
+    };
 
   return (
     <div className="container mx-auto p-8 space-y-8">
@@ -84,6 +94,12 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
             </Button>
           </div>
         </div>
+        <Button variant="outline" asChild>
+          <Link href={`/profile/${params.id}/edit`}>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit Profile
+          </Link>
+        </Button>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -111,7 +127,23 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         </Badge>
       </div>
 
-      <Separator />
+      {/* <Separator /> */}
+
+      <div className="relative">
+        <Slider {...settings}>
+          {(profile.galleryImages || []).map((image: string, index: number) => (
+            <div key={index}>
+              <Image
+                src={image || "/placeholder.svg"}
+                alt={`Gallery image ${index}`}
+                width={500}
+                height={300}
+                className="w-full h-auto rounded-lg shadow-lg object-cover"
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <Card className="col-span-2">
@@ -168,7 +200,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {profile.projects.map((project: any) => (
               <Card key={project.id}>
-                <Image src={project.image} alt={project.name} width={300} height={200} className="w-full h-48 object-cover rounded-t-lg" />
+                <Image src={project.image || "/placeholder.svg"} alt={project.name} width={300} height={200} className="w-full h-48 object-cover rounded-t-lg" />
                 <CardHeader>
                   <CardTitle>{project.name}</CardTitle>
                 </CardHeader>

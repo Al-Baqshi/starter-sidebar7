@@ -18,8 +18,8 @@ import {
   DropdownMenuSeparator,
   //DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Filters } from './Filters'
-import { UserDetails } from './UserDetails'
+import { Filters } from '@/components/users/Filters'
+import { UserDetails } from '@/components/users/UserDetails'
 import { mockUsers, mockEntities, mockRoles, initialCategories, initialRoles, Role } from '@/app/users/data/mockData'
 import { Label } from "@/components/ui/label"
 import Link from 'next/link'
@@ -310,6 +310,7 @@ export function UserList() {
                     </TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>User Type</TableHead>
                     <TableHead>Role/Category</TableHead>
                     <TableHead>Entity</TableHead>
                     <TableHead>
@@ -334,6 +335,7 @@ export function UserList() {
                       </TableCell>
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.role ? 'Registered' : 'Guest'}</TableCell>
                       <TableCell>{user.role || user.category}</TableCell>
                       <TableCell>{user.entity}</TableCell>
                       <TableCell>
@@ -348,10 +350,10 @@ export function UserList() {
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
                           <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
-                            View Details
+                            Action
                           </Button>
                           <Button variant="outline" size="sm" asChild>
-                            <Link href={`/profiles/${user.id}`}>
+                            <Link href={`/profile/${user.id}`}>
                               Visit Profile
                             </Link>
                           </Button>
@@ -413,10 +415,10 @@ export function UserList() {
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
                           <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
-                            View Details
+                            Action
                           </Button>
                           <Button variant="outline" size="sm" asChild>
-                            <Link href={`/profiles/${user.id}`}>
+                            <Link href={`/profile/${user.id}`}>
                               Visit Profile
                             </Link>
                           </Button>
@@ -482,10 +484,10 @@ export function UserList() {
                           <TableCell className="text-right">
                             <div className="flex justify-end space-x-2">
                               <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
-                                View Details
+                                Action
                               </Button>
                               <Button variant="outline" size="sm" asChild>
-                                <Link href={`/profiles/${user.id}`}>
+                                <Link href={`/profile/${user.id}`}>
                                   Visit Profile
                                 </Link>
                               </Button>

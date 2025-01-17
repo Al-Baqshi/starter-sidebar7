@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 "use client"
 
 import { useState } from 'react'
@@ -6,13 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Download, BarChart, PieChart, TrendingUp, Zap, FileText, Calendar, DollarSign, AlertTriangle, Filter, Plus, Users } from 'lucide-react'
-import { ChartContainer, LineChartComponent, PieChartComponent, BarChartComponent } from "@/components/chart"
+import { Download, BarChart, TrendingUp, Zap, FileText, Calendar, DollarSign, AlertTriangle, Filter, Plus, Users } from 'lucide-react'
+import { ChartContainer } from "@/components/ui/chart"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { BarChartComponent, LineChartComponent, PieChartComponent } from '@/components/chart'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 export default function ReportsAndAnalytics() {
   const [activeTab, setActiveTab] = useState('project-insights')
@@ -137,11 +140,15 @@ export default function ReportsAndAnalytics() {
             </CardHeader>
             <CardContent className="h-[400px]">
               <ChartContainer>
-                <LineChartComponent
-                  data={projectInsightsData}
-                  categories={["Budget", "Actual"]}
-                  colors={["#14213D", "#FCA311"]}
-                />
+                <LineChart width={800} height={300} data={projectInsightsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="Budget" stroke="#2563eb" />
+                  <Line type="monotone" dataKey="Actual" stroke="#16a34a" />
+                </LineChart>
               </ChartContainer>
             </CardContent>
           </Card>

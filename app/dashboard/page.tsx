@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarChart, Clock, DollarSign, Users } from 'lucide-react'
-import { OverviewCard } from "@/components/dashboard/overview-card"
-import { RecentActivityList } from "@/components/dashboard/recent-activity-list"
+import { OverviewCard } from "@/components/dashboard/OverviewCard"
+import { RecentActivityList } from "@/components/dashboard/RecentActivityList"
 
 // TODO: Implement API integration
 // - Fetch dashboard data from the backend

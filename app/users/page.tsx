@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { UserList } from '@/components/UserList'
+import { UserList } from '@/components/users/UserList'
 import { mockUsers } from './data/mockData'
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
