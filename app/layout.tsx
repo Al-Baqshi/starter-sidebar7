@@ -1,11 +1,8 @@
+import { ThemeProvider } from "@/components/sidebar/theme-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { ThemeProvider } from "@/components/sidebar/theme-provider";
-import { ModeToggle } from "@/components/sidebar/mode-toogle";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,24 +30,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider>
-            <AppSidebar />
-            <main className="flex flex-1 flex-col gap-4 p-4 pt-0 w-full h-screen">
-              <div className="flex gap-3 items-center">
-                <SidebarTrigger />
-                <ModeToggle />
-              </div>
-              {children}
-            </main>
-          </SidebarProvider>
-        </ThemeProvider>
-        <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster />
       </body>
     </html>
   );

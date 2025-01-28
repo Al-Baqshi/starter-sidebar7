@@ -18,7 +18,8 @@ import {
   FileCheck2,
   ShieldCheck,
   MessagesSquare,
-  User
+  User,
+  LogOut
 } from "lucide-react"
 
 import { NavUser } from "@/components/sidebar/nav-user"
@@ -29,6 +30,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@clerk/nextjs"
 
 export {
   SidebarProvider,
@@ -47,61 +49,61 @@ const menuItems = [
     url: "/projects",
     icon: FolderOpen,
   },
-  {
-    title: "File Manager",
-    url: "/file-manager",
-    icon: Files,
-  },
-  {
-    title: "On-Site Management",
-    url: "/on-site",
-    icon: Building2,
-  },
-  {
-    title: "Collaboration Hub",
-    url: "/collaboration",
-    icon: MessagesSquare,
-  },
-  {
-    title: "Finance",
-    url: "/finance",
-    icon: DollarSign,
-  },
-  {
-    title: "Tenders",
-    url: "/tenders",
-    icon: FileText,
-  },
-  {
-    title: "SOQ Client",
-    url: "/soq",
-    icon: User,
-  },
-  {
-    title: "SOQ Viewer",
-    url: "/soq/bidder",
-    icon: Users2,
-  },
-  {
-    title: "Reports & Analytics",
-    url: "/reports",
-    icon: BarChart3,
-  },
-  {
-    title: "Marketplace",
-    url: "/marketplace",
-    icon: Store,
-  },
+  // {
+  //   title: "File Manager",
+  //   url: "/file-manager",
+  //   icon: Files,
+  // },
+  // {
+  //   title: "On-Site Management",
+  //   url: "/on-site",
+  //   icon: Building2,
+  // },
+  // {
+  //   title: "Collaboration Hub",
+  //   url: "/collaboration",
+  //   icon: MessagesSquare,
+  // },
+  // {
+  //   title: "Finance",
+  //   url: "/finance",
+  //   icon: DollarSign,
+  // },
+  // {
+  //   title: "Tenders",
+  //   url: "/tenders",
+  //   icon: FileText,
+  // },
+  // {
+  //   title: "SOQ Client",
+  //   url: "/soq",
+  //   icon: User,
+  // },
+  // {
+  //   title: "SOQ Viewer",
+  //   url: "/soq/bidder",
+  //   icon: Users2,
+  // },
+  // {
+  //   title: "Reports & Analytics",
+  //   url: "/reports",
+  //   icon: BarChart3,
+  // },
+  // {
+  //   title: "Marketplace",
+  //   url: "/marketplace",
+  //   icon: Store,
+  // },
   {
     title: "User Management",
     url: "/users",
     icon: Users2,
   },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Settings",
+  //   url: "/settings",
+  //   icon: Settings,
+  // },
   {
     title: "Networking",
     url: "/profiles",
@@ -132,6 +134,7 @@ const user = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = React.useState("/dashboard")
+  const { signOut } = useAuth();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -156,6 +159,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </Link>
           ))}
         </nav>
+        <div
+        onClick={() => signOut()}
+        className="flex items-center gap-3 cursor-pointer px-4 py-2"
+      >
+        <LogOut size={16} />
+        <span className="text-sm">Logout</span>
+      </div>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

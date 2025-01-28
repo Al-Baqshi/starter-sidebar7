@@ -1,42 +1,67 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Edit } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator"
-import { Star, MapPin, Phone, Mail, Globe, Calendar, Users, CheckCircle2 } from 'lucide-react'
-import Image from 'next/image'
-import { profiles } from '@/data/profiles'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, Edit } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import {
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
+  Calendar,
+  Users,
+  CheckCircle2,
+} from "lucide-react";
+import Image from "next/image";
+import { profiles } from "@/data/profiles";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { useGetUserDetailsQuery } from "@/services/users";
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
-  const [profile, setProfile] = useState<any>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string>("")
+  const [profile, setProfile] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const { data: userDetails } = useGetUserDetailsQuery(params.id, {
+    skip: !params.id,
+  });
+  console.log(userDetails, "userDetails");
 
   useEffect(() => {
-    setProfile(profiles[params.id as keyof typeof profiles])
-  }, [params.id])
+    setProfile(profiles[params.id as keyof typeof profiles]);
+  }, [params.id]);
 
   if (!profile) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-    };
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
   return (
     <div className="container mx-auto p-8 space-y-8">
@@ -65,7 +90,10 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
             </Button>
           )}
           <div className="flex items-center space-x-2">
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
@@ -76,8 +104,8 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                 <SelectItem value="consultant">Consultant</SelectItem>
               </SelectContent>
             </Select>
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               onClick={() => {
                 if (selectedCategory) {
                   // Add logic to add user to management list under the selected category
@@ -119,7 +147,9 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         <div className="flex items-center">
           <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
           <span className="ml-1 font-semibold">{profile.rating}</span>
-          <span className="ml-1 text-muted-foreground">({profile.reviewCount} reviews)</span>
+          <span className="ml-1 text-muted-foreground">
+            ({profile.reviewCount} reviews)
+          </span>
         </div>
         <Badge variant="secondary" className="text-sm">
           <MapPin className="h-4 w-4 mr-1" />
@@ -156,7 +186,9 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <p className="font-semibold">Specialties:</p>
               <div className="flex flex-wrap gap-2">
                 {profile.specialties.map((specialty: string, index: number) => (
-                  <Badge key={index} variant="outline">{specialty}</Badge>
+                  <Badge key={index} variant="outline">
+                    {specialty}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -200,7 +232,13 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {profile.projects.map((project: any) => (
               <Card key={project.id}>
-                <Image src={project.image || "/placeholder.svg"} alt={project.name} width={300} height={200} className="w-full h-48 object-cover rounded-t-lg" />
+                <Image
+                  src={project.image || "/placeholder.svg"}
+                  alt={project.name}
+                  width={300}
+                  height={200}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
                 <CardHeader>
                   <CardTitle>{project.name}</CardTitle>
                 </CardHeader>
@@ -238,6 +276,5 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-

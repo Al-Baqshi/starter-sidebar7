@@ -1,20 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { X } from 'lucide-react'
-import CreatableSelect from 'react-select/creatable';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { X } from "lucide-react";
+import CreatableSelect from "react-select/creatable";
+import { useCreateUserProfileMutation } from "@/services/users";
+import { useUploadFile } from "@/hooks/use-upload-file";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -26,7 +48,9 @@ const profileFormSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  type: z.string().min(2, { message: "Business type must be at least 2 characters." }),
+  type: z
+    .string()
+    .min(2, { message: "Business type must be at least 2 characters." }),
   location: z.string().min(2, {
     message: "Location must be at least 2 characters.",
   }),
@@ -39,7 +63,9 @@ const profileFormSchema = z.object({
   employeeCount: z.string().min(1, {
     message: "Please enter the number of employees.",
   }),
-  specialties: z.array(z.string()).min(1, { message: "Please enter at least one specialty." }),
+  specialties: z
+    .array(z.string())
+    .min(1, { message: "Please enter at least one specialty." }),
   profilePicture: z
     .any()
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
@@ -53,7 +79,10 @@ const profileFormSchema = z.object({
       z.object({
         file: z
           .any()
-          .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+          .refine(
+            (file) => file?.size <= MAX_FILE_SIZE,
+            `Max file size is 5MB.`
+          )
           .refine(
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg, .png, and .webp formats are supported."
@@ -61,14 +90,19 @@ const profileFormSchema = z.object({
       })
     )
     .optional(),
-})
+});
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function CreateProfilePage() {
-  const router = useRouter()
-  const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null)
-  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([])
+  const router = useRouter();
+  const [profilePicturePreview, setProfilePicturePreview] = useState<
+    string | null
+  >(null);
+  const [galleryPreviews, setGalleryPreviews] = useState<any>([]);
+
+  const [createProfile] = useCreateUserProfileMutation();
+  const { upload } = useUploadFile();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -83,53 +117,109 @@ export default function CreateProfilePage() {
       specialties: [],
       galleryImages: [],
     },
-  })
+  });
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "Profile created successfully",
-      description: "Your profile has been created and saved.",
-    })
-    console.log(data)
+  async function onSubmit(data: ProfileFormValues) {
+    const payload = {
+      profile: profilePicturePreview,
+      name: data?.name,
+      email: data?.email,
+      businessType: data?.type,
+      location: data?.location,
+      description: data?.description,
+      year: parseInt(data?.foundedYear),
+      employeeCount: parseInt(data?.employeeCount),
+      specialities: data?.specialties?.join(", "),
+      userGallery: galleryPreviews,
+    };
+    const response: any = await createProfile(payload);
+    console.log(response, "response");
+    if (!response?.error?.data?.Succeeded) {
+      toast({
+        title: "Profile creation failed",
+        description: "Failed to create user profile",
+      });
+    } else {
+      toast({
+        title: "Profile created successfully",
+        description: "Your profile has been created and saved.",
+      });
+      router.push("/dashboard");
+    }
     // Here you would typically send the data to your backend API
     // For now, we'll just redirect to the main profile page
-    router.push("/profile/1")
   }
 
-  const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+  const handleProfilePictureChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
     if (file) {
-      form.setValue("profilePicture", file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfilePicturePreview(reader.result as string)
+      const s3Link = await upload(file);
+      console.log(s3Link, "s3Link");
+      if (s3Link) {
+        form.setValue("profilePicture", file);
+        setProfilePicturePreview(s3Link as string);
+        toast({ title: "File Upload Successessfully" });
+      } else {
+        toast({ title: "Failed to upload file." });
       }
-      reader.readAsDataURL(file)
+      // const reader = new FileReader();
+      // reader.onloadend = () => {
+      //   setProfilePicturePreview(reader.result as string);
+      // };
+      // reader.readAsDataURL(file);
     }
-  }
+  };
 
-  const handleGalleryImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
+  const handleGalleryImagesChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => ({ file }))
-      form.setValue("galleryImages", [...(form.getValues("galleryImages") || []), ...newImages])
-      
-      const newPreviews = Array.from(files).map((file) => URL.createObjectURL(file))
-      setGalleryPreviews([...galleryPreviews, ...newPreviews])
+      const newImages = Array.from(files).map((file) => ({ file }));
+
+      // Set the form values as they are
+      form.setValue("galleryImages", [
+        ...(form.getValues("galleryImages") || []),
+        ...newImages,
+      ]);
+
+      // Create file previews immediately for UI feedback
+      // const newPreviews = Array.from(files).map((file) =>
+      //   URL.createObjectURL(file)
+      // );
+      // setGalleryPreviews([...galleryPreviews, ...newPreviews]);
+
+      // Upload files and get S3 links
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const link = await upload(file);
+        return link;
+      });
+
+      try {
+        const s3Links = await Promise.all(uploadPromises);
+        console.log("S3 Links:", s3Links);
+
+        // Append valid S3 links to gallery previews
+        setGalleryPreviews(s3Links);
+      } catch (error) {
+        console.error("Error uploading one or more files:", error);
+      }
     }
-  }
+  };
 
   const removeGalleryImage = (index: number) => {
-    const currentGalleryImages = form.getValues("galleryImages") || []
-    const updatedGalleryImages = [...currentGalleryImages]
-    updatedGalleryImages.splice(index, 1)
-    form.setValue("galleryImages", updatedGalleryImages)
+    const currentGalleryImages = form.getValues("galleryImages") || [];
+    const updatedGalleryImages = [...currentGalleryImages];
+    updatedGalleryImages.splice(index, 1);
+    form.setValue("galleryImages", updatedGalleryImages);
 
-    const updatedPreviews = [...galleryPreviews]
-    URL.revokeObjectURL(updatedPreviews[index])
-    updatedPreviews.splice(index, 1)
-    setGalleryPreviews(updatedPreviews)
-  }
+    const updatedPreviews = [...galleryPreviews];
+    URL.revokeObjectURL(updatedPreviews[index]);
+    updatedPreviews.splice(index, 1);
+    setGalleryPreviews(updatedPreviews);
+  };
 
   return (
     <div className="container mx-auto p-8">
@@ -137,7 +227,8 @@ export default function CreateProfilePage() {
         <CardHeader>
           <CardTitle>Create Your Profile</CardTitle>
           <CardDescription>
-            Fill out the form below to create your professional profile. This information will be visible to potential clients and partners.
+            Fill out the form below to create your professional profile. This
+            information will be visible to potential clients and partners.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -152,7 +243,10 @@ export default function CreateProfilePage() {
                     <FormControl>
                       <div className="flex items-center space-x-4">
                         <Avatar className="w-24 h-24">
-                          <AvatarImage src={profilePicturePreview || ""} alt="Profile picture" />
+                          <AvatarImage
+                            src={profilePicturePreview || ""}
+                            alt="Profile picture"
+                          />
                           <AvatarFallback>Upload</AvatarFallback>
                         </Avatar>
                         <Input
@@ -176,7 +270,10 @@ export default function CreateProfilePage() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your name or company name" {...field} />
+                      <Input
+                        placeholder="Your name or company name"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>
                       This is your public display name.
@@ -223,15 +320,28 @@ export default function CreateProfilePage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Construction Company">Construction Company</SelectItem>
+                        <SelectItem value="Construction Company">
+                          Construction Company
+                        </SelectItem>
                         <SelectItem value="Plumber">Plumber</SelectItem>
                         <SelectItem value="Painter">Painter</SelectItem>
-                        <SelectItem value="Kitchen Maker">Kitchen Maker</SelectItem>
-                        <SelectItem value="Concrete Specialist">Concrete Specialist</SelectItem>
+                        <SelectItem value="Kitchen Maker">
+                          Kitchen Maker
+                        </SelectItem>
+                        <SelectItem value="Concrete Specialist">
+                          Concrete Specialist
+                        </SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
-                    {(field.value === "Other" || !["Construction Company", "Plumber", "Painter", "Kitchen Maker", "Concrete Specialist"].includes(field.value)) && (
+                    {(field.value === "Other" ||
+                      ![
+                        "Construction Company",
+                        "Plumber",
+                        "Painter",
+                        "Kitchen Maker",
+                        "Concrete Specialist",
+                      ].includes(field.value)) && (
                       <Input
                         placeholder="Enter your custom business type"
                         value={field.value}
@@ -240,7 +350,8 @@ export default function CreateProfilePage() {
                       />
                     )}
                     <FormDescription>
-                      Select the category that best describes your business, or enter your own if not listed.
+                      Select the category that best describes your business, or
+                      enter your own if not listed.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -253,7 +364,10 @@ export default function CreateProfilePage() {
                   <FormItem>
                     <FormLabel>Location</FormLabel>
                     <FormControl>
-                      <Input placeholder="City, State/Province, Country" {...field} />
+                      <Input
+                        placeholder="City, State/Province, Country"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>
                       Your primary business location.
@@ -276,7 +390,8 @@ export default function CreateProfilePage() {
                       />
                     </FormControl>
                     <FormDescription>
-                      Provide a brief description of your services and expertise.
+                      Provide a brief description of your services and
+                      expertise.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -323,17 +438,26 @@ export default function CreateProfilePage() {
                     <FormControl>
                       <CreatableSelect
                         isMulti
-                        options={field.value.map((specialty: string) => ({ label: specialty, value: specialty }))}
-                        value={field.value.map((specialty: string) => ({ label: specialty, value: specialty }))}
+                        options={field.value.map((specialty: string) => ({
+                          label: specialty,
+                          value: specialty,
+                        }))}
+                        value={field.value.map((specialty: string) => ({
+                          label: specialty,
+                          value: specialty,
+                        }))}
                         onChange={(newValue) => {
-                          const specialties = newValue.map((item: any) => item.value);
+                          const specialties = newValue.map(
+                            (item: any) => item.value
+                          );
                           field.onChange(specialties);
                         }}
                         placeholder="e.g., Residential, Commercial, Renovation"
                       />
                     </FormControl>
                     <FormDescription>
-                      Add your main areas of expertise. You can add multiple specialties.
+                      Add your main areas of expertise. You can add multiple
+                      specialties.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -375,7 +499,8 @@ export default function CreateProfilePage() {
                       </div>
                     </FormControl>
                     <FormDescription>
-                      Upload images for your project gallery (max 5MB each, .jpg, .png, or .webp)
+                      Upload images for your project gallery (max 5MB each,
+                      .jpg, .png, or .webp)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -387,6 +512,5 @@ export default function CreateProfilePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
