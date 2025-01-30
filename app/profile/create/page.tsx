@@ -134,17 +134,17 @@ export default function CreateProfilePage() {
     };
     const response: any = await createProfile(payload);
     console.log(response, "response");
-    if (!response?.error?.data?.Succeeded) {
-      toast({
-        title: "Profile creation failed",
-        description: "Failed to create user profile",
-      });
-    } else {
+    if (response?.data) {
       toast({
         title: "Profile created successfully",
         description: "Your profile has been created and saved.",
       });
       router.push("/dashboard");
+    } else {
+      toast({
+        title: "Profile creation failed",
+        description: "Failed to create user profile",
+      });
     }
     // Here you would typically send the data to your backend API
     // For now, we'll just redirect to the main profile page

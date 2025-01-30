@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 import {
   LayoutDashboard,
   FolderOpen,
@@ -19,24 +19,24 @@ import {
   ShieldCheck,
   MessagesSquare,
   User,
-  LogOut
-} from "lucide-react"
+  LogOut,
+} from "lucide-react";
 
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { useAuth } from "@clerk/nextjs"
+} from "@/components/ui/sidebar";
+import { useAuth } from "@clerk/nextjs";
 
 export {
   SidebarProvider,
   SidebarInset,
-  SidebarTrigger
-} from "@/components/ui/sidebar"
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 const menuItems = [
   {
@@ -124,16 +124,16 @@ const menuItems = [
     url: "/kyc-admin",
     icon: ShieldCheck,
   },
-]
+];
 
 const user = {
   name: "shadcn",
   email: "m@example.com",
   avatar: "/avatars/shadcn.jpg",
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [activeItem, setActiveItem] = React.useState("/dashboard")
+  const [activeItem, setActiveItem] = React.useState("/dashboard");
   const { signOut } = useAuth();
 
   return (
@@ -160,17 +160,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ))}
         </nav>
         <div
-        onClick={() => signOut()}
-        className="flex items-center gap-3 cursor-pointer px-4 py-2"
-      >
-        <LogOut size={16} />
-        <span className="text-sm">Logout</span>
-      </div>
+          onClick={() => signOut()}
+          className="flex items-center gap-3 cursor-pointer px-4 py-2"
+        >
+          <LogOut size={16} />
+          <span className="text-sm">Logout</span>
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

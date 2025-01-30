@@ -27,7 +27,6 @@ export default function DashboardLayout({
         <RedirectToSignIn />
       </SignedOut>
       <SignedIn>
-        <Provider store={store}>
           <SignUpHandler />
           <SidebarProvider>
             <AppSidebar />
@@ -39,7 +38,6 @@ export default function DashboardLayout({
               {children}
             </main>
           </SidebarProvider>
-        </Provider>
       </SignedIn>
     </ClerkProvider>
   );
