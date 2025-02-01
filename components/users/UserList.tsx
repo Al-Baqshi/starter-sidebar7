@@ -1,15 +1,35 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Checkbox } from "@/components/ui/checkbox"
-import { MoreHorizontal, UserCog, Eye, Plus } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { MoreHorizontal, UserCog, Eye, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,94 +37,104 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   //DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Filters } from '@/components/users/Filters'
-import { UserDetails } from '@/components/users/UserDetails'
-import { mockUsers, mockEntities, mockRoles, initialCategories, initialRoles, Role } from '@/app/users/data/mockData'
-import { Label } from "@/components/ui/label"
-import Link from 'next/link'
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/dropdown-menu";
+import { Filters } from "@/components/users/Filters";
+import { UserDetails } from "@/components/users/UserDetails";
+import {
+  mockUsers,
+  mockEntities,
+  mockRoles,
+  initialCategories,
+  initialRoles,
+  Role,
+} from "@/app/users/data/mockData";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
-export function UserList() {
+export function UserList(props: any) {
   // State management
-  const [users, setUsers] = useState(mockUsers)
-  const [entities] = useState(mockEntities)
-  const [roles, setRoles] = useState(initialRoles)
-  const [categories, setCategories] = useState(initialCategories)
-  const [filteredUsers, setFilteredUsers] = useState(users)
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
-  const [selectedUserForDetails, setSelectedUserForDetails] = useState<any>(null)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [selectedUserForEdit, setSelectedUserForEdit] = useState<any>(null)
-  const [isAddRoleDialogOpen, setIsAddRoleDialogOpen] = useState(false)
+  const [users, setUsers] = useState(mockUsers);
+  const [entities] = useState(mockEntities);
+  const [roles, setRoles] = useState(initialRoles);
+  const [categories, setCategories] = useState(initialCategories);
+  const [filteredUsers, setFilteredUsers] = useState(users);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUserForDetails, setSelectedUserForDetails] =
+    useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState<any>(null);
+  const [isAddRoleDialogOpen, setIsAddRoleDialogOpen] = useState(false);
 
   // Function to toggle selection of all users
   const toggleSelectAll = () => {
     if (selectedUsers.length === filteredUsers.length) {
-      setSelectedUsers([])
+      setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredUsers.map(user => user.id))
+      setSelectedUsers(filteredUsers.map((user) => user.id));
     }
-  }
+  };
 
   // Function to toggle selection of a single user
   const toggleSelectUser = (userId: string) => {
     if (selectedUsers.includes(userId)) {
-      setSelectedUsers(selectedUsers.filter(id => id !== userId))
+      setSelectedUsers(selectedUsers.filter((id) => id !== userId));
     } else {
-      setSelectedUsers([...selectedUsers, userId])
+      setSelectedUsers([...selectedUsers, userId]);
     }
-  }
+  };
 
   // Function to handle moving users between categories
   const handleMoveUsers = (targetCategory: string, userIds: string[]) => {
-    const updatedUsers = users.map(user => 
+    const updatedUsers = users.map((user) =>
       userIds.includes(user.id) ? { ...user, category: targetCategory } : user
-    )
-    setUsers(updatedUsers)
-    setFilteredUsers(updatedUsers)
-    setSelectedUsers([])
-  }
+    );
+    setUsers(updatedUsers);
+    setFilteredUsers(updatedUsers);
+    setSelectedUsers([]);
+  };
 
   // Edit User Dialog component
-  const EditUserDialog = ({ user, isOpen, onClose }) => {
-    const [editedUser, setEditedUser] = useState(user)
-    const [selectedRole, setSelectedRole] = useState(user.role || "")
+  const EditUserDialog = ({ user, isOpen, onClose }:any) => {
+    const [editedUser, setEditedUser] = useState(user);
+    const [selectedRole, setSelectedRole] = useState(user.role || "");
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEditedUser({ ...editedUser, [e.target.name]: e.target.value })
-    }
+      setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
+    };
 
     const handleRoleChange = (value: string) => {
-      setSelectedRole(value)
-      setEditedUser({ ...editedUser, role: value })
-    }
+      setSelectedRole(value);
+      setEditedUser({ ...editedUser, role: value });
+    };
 
     const handlePermissionChange = (permission: string, checked: boolean) => {
-      const updatedRoles = roles.map(role => {
+      const updatedRoles = roles.map((role) => {
         if (role.name === selectedRole) {
           return {
             ...role,
             permissions: {
               ...role.permissions,
-              [permission]: checked
-            }
-          }
+              [permission]: checked,
+            },
+          };
         }
-        return role
-      })
-      setRoles(updatedRoles)
-    }
+        return role;
+      });
+      setRoles(updatedRoles);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
+      e.preventDefault();
       // Update the user in the users array
-      const updatedUsers = users.map(u => u.id === editedUser.id ? editedUser : u)
-      setUsers(updatedUsers)
-      setFilteredUsers(updatedUsers)
-      onClose()
-    }
+      const updatedUsers = users.map((u) =>
+        u.id === editedUser.id ? editedUser : u
+      );
+      setUsers(updatedUsers);
+      setFilteredUsers(updatedUsers);
+      onClose();
+    };
 
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -115,22 +145,42 @@ export function UserList() {
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">Name</Label>
-                <Input id="name" name="name" value={editedUser.name} onChange={handleInputChange} className="col-span-3" />
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={editedUser.name}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">Email</Label>
-                <Input id="email" name="email" value={editedUser.email} onChange={handleInputChange} className="col-span-3" />
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  value={editedUser.email}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">Role</Label>
+                <Label htmlFor="role" className="text-right">
+                  Role
+                </Label>
                 <Select onValueChange={handleRoleChange} value={selectedRole}>
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select role" />
                   </SelectTrigger>
                   <SelectContent>
                     {roles.map((role) => (
-                      <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                      <SelectItem key={role.id} value={role.name}>
+                        {role.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -139,14 +189,23 @@ export function UserList() {
                 <div className="col-span-4">
                   <h4 className="mb-2 font-semibold">Permissions:</h4>
                   <div className="space-y-2">
-                    {Object.entries(roles.find(role => role.name === selectedRole)?.permissions || {}).map(([key, value]) => (
+                    {Object.entries(
+                      roles.find((role) => role.name === selectedRole)
+                        ?.permissions || {}
+                    ).map(([key, value]) => (
                       <div key={key} className="flex items-center">
-                        <Checkbox 
-                          id={key} 
-                          checked={value} 
-                          onCheckedChange={(checked) => handlePermissionChange(key, checked as boolean)}
+                        <Checkbox
+                          id={key}
+                          checked={value}
+                          onCheckedChange={(checked) =>
+                            handlePermissionChange(key, checked as boolean)
+                          }
                         />
-                        <label htmlFor={key} className="ml-2 text-sm">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                        <label htmlFor={key} className="ml-2 text-sm">
+                          {key
+                            .replace(/([A-Z])/g, " $1")
+                            .replace(/^./, (str) => str.toUpperCase())}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -159,14 +218,14 @@ export function UserList() {
           </form>
         </DialogContent>
       </Dialog>
-    )
-  }
+    );
+  };
 
   // Add Role Dialog component
-  const AddRoleDialog = ({ isOpen, onClose }) => {
+  const AddRoleDialog = ({ isOpen, onClose }:any) => {
     const [newRole, setNewRole] = useState<Role>({
       id: (roles.length + 1).toString(),
-      name: '',
+      name: "",
       permissions: {
         projectManagement: false,
         userManagement: false,
@@ -175,14 +234,14 @@ export function UserList() {
         communicationManagement: false,
         systemConfiguration: false,
         dataReporting: false,
-      }
-    })
+      },
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      setRoles([...roles, newRole])
-      onClose()
-    }
+      e.preventDefault();
+      setRoles([...roles, newRole]);
+      onClose();
+    };
 
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -193,12 +252,16 @@ export function UserList() {
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="roleName" className="text-right">Role Name</Label>
-                <Input 
-                  id="roleName" 
-                  value={newRole.name} 
-                  onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-                  className="col-span-3" 
+                <Label htmlFor="roleName" className="text-right">
+                  Role Name
+                </Label>
+                <Input
+                  id="roleName"
+                  value={newRole.name}
+                  onChange={(e) =>
+                    setNewRole({ ...newRole, name: e.target.value })
+                  }
+                  className="col-span-3"
                 />
               </div>
               <div className="col-span-4">
@@ -206,15 +269,24 @@ export function UserList() {
                 <div className="space-y-2">
                   {Object.entries(newRole.permissions).map(([key, value]) => (
                     <div key={key} className="flex items-center">
-                      <Checkbox 
-                        id={key} 
-                        checked={value} 
-                        onCheckedChange={(checked) => setNewRole({
-                          ...newRole, 
-                          permissions: {...newRole.permissions, [key]: checked as boolean}
-                        })}
+                      <Checkbox
+                        id={key}
+                        checked={value}
+                        onCheckedChange={(checked) =>
+                          setNewRole({
+                            ...newRole,
+                            permissions: {
+                              ...newRole.permissions,
+                              [key]: checked as boolean,
+                            },
+                          })
+                        }
                       />
-                      <label htmlFor={key} className="ml-2 text-sm">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
+                      <label htmlFor={key} className="ml-2 text-sm">
+                        {key
+                          .replace(/([A-Z])/g, " $1")
+                          .replace(/^./, (str) => str.toUpperCase())}
+                      </label>
                     </div>
                   ))}
                 </div>
@@ -226,8 +298,8 @@ export function UserList() {
           </form>
         </DialogContent>
       </Dialog>
-    )
-  }
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -235,31 +307,33 @@ export function UserList() {
         <h1 className="text-2xl font-bold">User Management</h1>
       </div>
 
-      <Filters 
+      <Filters
         users={users}
         setFilteredUsers={setFilteredUsers}
         categories={categories}
-        roles={roles.map(role => role.name)}
+        roles={roles.map((role) => role.name)}
         entities={entities}
         onMoveUsers={handleMoveUsers}
         selectedUsers={selectedUsers}
         onUpdateSelectedUsers={setSelectedUsers}
       />
 
-      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
+      <Tabs
+        value={activeCategory}
+        onValueChange={setActiveCategory}
+        className="w-full"
+      >
         <TabsList className="flex flex-wrap items-center">
           <TabsTrigger value="all">All Users</TabsTrigger>
           <TabsTrigger value="inhouse">In-House Users</TabsTrigger>
           {categories.map((category) => (
-            <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
+            <TabsTrigger key={category} value={category}>
+              {category}
+            </TabsTrigger>
           ))}
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ml-2"
-              >
+              <Button variant="ghost" size="sm" className="ml-2">
                 <Plus className="h-4 w-4" />
               </Button>
             </DialogTrigger>
@@ -267,15 +341,17 @@ export function UserList() {
               <DialogHeader>
                 <DialogTitle>Add New Category</DialogTitle>
               </DialogHeader>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                const newCategory = formData.get('newCategory') as string;
-                if (newCategory) {
-                  setCategories([...categories, newCategory]);
-                }
-                (e.target as HTMLFormElement).reset();
-              }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const newCategory = formData.get("newCategory") as string;
+                  if (newCategory) {
+                    setCategories([...categories, newCategory]);
+                  }
+                  (e.target as HTMLFormElement).reset();
+                }}
+              >
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="newCategory" className="text-right">
@@ -316,9 +392,18 @@ export function UserList() {
                     <TableHead>
                       KYC Status
                       <div className="flex space-x-2 mt-1">
-                        <span className="inline-block w-3 h-3 rounded-full bg-green-500" title="Verified"></span>
-                        <span className="inline-block w-3 h-3 rounded-full bg-yellow-500" title="Pending"></span>
-                        <span className="inline-block w-3 h-3 rounded-full bg-red-500" title="Rejected"></span>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full bg-green-500"
+                          title="Verified"
+                        ></span>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full bg-yellow-500"
+                          title="Pending"
+                        ></span>
+                        <span
+                          className="inline-block w-3 h-3 rounded-full bg-red-500"
+                          title="Rejected"
+                        ></span>
                       </div>
                     </TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -328,28 +413,40 @@ export function UserList() {
                   {filteredUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell>
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedUsers.includes(user.id)}
-                          onCheckedChange={(checked) => toggleSelectUser(user.id)}
+                          onCheckedChange={(checked) =>
+                            toggleSelectUser(user.id)
+                          }
                         />
                       </TableCell>
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role ? 'Registered' : 'Guest'}</TableCell>
+                      <TableCell>
+                        {user.role ? "Registered" : "Guest"}
+                      </TableCell>
                       <TableCell>{user.role || user.category}</TableCell>
                       <TableCell>{user.entity}</TableCell>
                       <TableCell>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          user.kycStatus === 'Verified' ? 'bg-green-100 text-green-800' :
-                          user.kycStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            user.kycStatus === "Verified"
+                              ? "bg-green-100 text-green-800"
+                              : user.kycStatus === "Pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {user.kycStatus}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedUserForDetails(user)}
+                          >
                             Action
                           </Button>
                           <Button variant="outline" size="sm" asChild>
@@ -374,7 +471,10 @@ export function UserList() {
                   <TableRow>
                     <TableHead className="w-[50px]">
                       <Checkbox
-                        checked={selectedUsers.length === filteredUsers.filter(user => user.role).length}
+                        checked={
+                          selectedUsers.length ===
+                          filteredUsers.filter((user) => user.role).length
+                        }
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
@@ -387,45 +487,64 @@ export function UserList() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers.filter(user => user.role).map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <Checkbox 
-                          checked={selectedUsers.includes(user.id)}
-                          onCheckedChange={(checked) => toggleSelectUser(user.id)}
-                        />
-                      </TableCell>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role}</TableCell>
-                      <TableCell>{user.entity}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {roles.find(role => role.name === user.role)?.permissions && 
-                            Object.entries(roles.find(role => role.name === user.role)!.permissions)
-                              .filter(([_, value]) => value)
-                              .map(([key, _]) => (
-                                <Badge key={key} variant="secondary" className="text-xs">
-                                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                                </Badge>
-                              ))
-                          }
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
-                            Action
-                          </Button>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/profile/${user.id}`}>
-                              Visit Profile
-                            </Link>
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredUsers
+                    .filter((user) => user.role)
+                    .map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedUsers.includes(user.id)}
+                            onCheckedChange={(checked) =>
+                              toggleSelectUser(user.id)
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.role}</TableCell>
+                        <TableCell>{user.entity}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {roles.find((role) => role.name === user.role)
+                              ?.permissions &&
+                              Object.entries(
+                                roles.find((role) => role.name === user.role)!
+                                  .permissions
+                              )
+                                .filter(([_, value]) => value)
+                                .map(([key, _]) => (
+                                  <Badge
+                                    key={key}
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    {key
+                                      .replace(/([A-Z])/g, " $1")
+                                      .replace(/^./, (str) =>
+                                        str.toUpperCase()
+                                      )}
+                                  </Badge>
+                                ))}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setSelectedUserForDetails(user)}
+                            >
+                              Action
+                            </Button>
+                            <Button variant="outline" size="sm" asChild>
+                              <Link href={`/profile/${user.id}`}>
+                                Visit Profile
+                              </Link>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </div>
@@ -440,7 +559,12 @@ export function UserList() {
                     <TableRow>
                       <TableHead className="w-[50px]">
                         <Checkbox
-                          checked={selectedUsers.length === filteredUsers.filter(user => user.category === category).length}
+                          checked={
+                            selectedUsers.length ===
+                            filteredUsers.filter(
+                              (user) => user.category === category
+                            ).length
+                          }
                           onCheckedChange={toggleSelectAll}
                         />
                       </TableHead>
@@ -450,9 +574,18 @@ export function UserList() {
                       <TableHead>
                         KYC Status
                         <div className="flex space-x-2 mt-1">
-                          <span className="inline-block w-3 h-3 rounded-full bg-green-500" title="Verified"></span>
-                          <span className="inline-block w-3 h-3 rounded-full bg-yellow-500" title="Pending"></span>
-                          <span className="inline-block w-3 h-3 rounded-full bg-red-500" title="Rejected"></span>
+                          <span
+                            className="inline-block w-3 h-3 rounded-full bg-green-500"
+                            title="Verified"
+                          ></span>
+                          <span
+                            className="inline-block w-3 h-3 rounded-full bg-yellow-500"
+                            title="Pending"
+                          ></span>
+                          <span
+                            className="inline-block w-3 h-3 rounded-full bg-red-500"
+                            title="Rejected"
+                          ></span>
                         </div>
                       </TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -464,26 +597,36 @@ export function UserList() {
                       .map((user) => (
                         <TableRow key={user.id}>
                           <TableCell>
-                            <Checkbox 
+                            <Checkbox
                               checked={selectedUsers.includes(user.id)}
-                              onCheckedChange={(checked) => toggleSelectUser(user.id)}
+                              onCheckedChange={(checked) =>
+                                toggleSelectUser(user.id)
+                              }
                             />
                           </TableCell>
                           <TableCell>{user.name}</TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{user.entity}</TableCell>
                           <TableCell>
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                              user.kycStatus === 'Verified' ? 'bg-green-100 text-green-800' :
-                              user.kycStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                user.kycStatus === "Verified"
+                                  ? "bg-green-100 text-green-800"
+                                  : user.kycStatus === "Pending"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
                               {user.kycStatus}
                             </span>
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end space-x-2">
-                              <Button variant="outline" size="sm" onClick={() => setSelectedUserForDetails(user)}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedUserForDetails(user)}
+                              >
                                 Action
                               </Button>
                               <Button variant="outline" size="sm" asChild>
@@ -503,12 +646,17 @@ export function UserList() {
         ))}
       </Tabs>
 
-      <Dialog open={!!selectedUserForDetails} onOpenChange={() => setSelectedUserForDetails(null)}>
+      <Dialog
+        open={!!selectedUserForDetails}
+        onOpenChange={() => setSelectedUserForDetails(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>User Details</DialogTitle>
           </DialogHeader>
-          {selectedUserForDetails && <UserDetails user={selectedUserForDetails} />}
+          {selectedUserForDetails && (
+            <UserDetails user={selectedUserForDetails} />
+          )}
         </DialogContent>
       </Dialog>
       {selectedUserForEdit && (
@@ -516,8 +664,8 @@ export function UserList() {
           user={selectedUserForEdit}
           isOpen={isEditDialogOpen}
           onClose={() => {
-            setIsEditDialogOpen(false)
-            setSelectedUserForEdit(null)
+            setIsEditDialogOpen(false);
+            setSelectedUserForEdit(null);
           }}
         />
       )}
@@ -526,6 +674,5 @@ export function UserList() {
         onClose={() => setIsAddRoleDialogOpen(false)}
       />
     </div>
-  )
+  );
 }
-

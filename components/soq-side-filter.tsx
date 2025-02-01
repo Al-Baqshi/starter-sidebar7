@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { cn } from "@/lib/utils"
-import { Category, SOQJob } from "@/types/soq"
+// import { Category, SOQJob } from "@/types/soq"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface SOQSideFilterProps {
-  categories: Category[]
+  categories: any[]
   selectedJobId: string | null
   onSelectJob: (jobId: string) => void
 }
@@ -27,7 +27,7 @@ export function SOQSideFilter({ categories, selectedJobId, onSelectJob }: SOQSid
 
   const filteredCategories = categories.map(category => ({
     ...category,
-    jobs: category.jobs.filter(job =>
+    jobs: category.jobs.filter((job:any) =>
       job.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.jobId.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -72,7 +72,7 @@ export function SOQSideFilter({ categories, selectedJobId, onSelectJob }: SOQSid
                   transition={{ duration: 0.2 }}
                 >
                   <div className="ml-4 mt-1 space-y-1">
-                    {category.jobs.map(job => (
+                    {category.jobs.map((job:any) => (
                       <Button
                         key={job.id}
                         variant="ghost"

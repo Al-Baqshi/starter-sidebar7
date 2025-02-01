@@ -87,7 +87,7 @@ type ProjectFormValues = z.infer<typeof formSchema>
 interface ProjectFormProps {
   onSubmit: (data: FormData) => void
   initialData?: Partial<ProjectFormValues>
-  clientName: string;
+  clientName?: string;
 }
 
 export function ProjectForm({ onSubmit, initialData, clientName }: ProjectFormProps) {

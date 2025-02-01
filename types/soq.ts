@@ -7,6 +7,7 @@ export interface Material {
   totalCost: number;
   attachments: string[];
   productLink: string;
+  saved?:boolean;
 }
 
 export interface Labor {
@@ -17,6 +18,7 @@ export interface Labor {
   hourlyRate: number;
   totalCost: number;
   notes: string[];
+  saved?:boolean;
 }
 
 export interface SOQJob {

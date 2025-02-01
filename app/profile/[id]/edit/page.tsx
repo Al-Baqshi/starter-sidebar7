@@ -1,38 +1,39 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChevronLeft, Upload, Trash2, Plus } from 'lucide-react'
-import { profiles } from '@/data/profiles'
-import Image from 'next/image';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronLeft, Upload, Trash2, Plus } from "lucide-react";
+import { profiles } from "@/data/profiles";
+import Image from "next/image";
 
-export default function EditProfilePage({ params }: { params: { id: string } }) {
-  const router = useRouter()
-  const [profile, setProfile] = useState<any>(null)
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const [galleryImages, setGalleryImages] = useState<any[]>([])
-  const [newProjectImages, setNewProjectImages] = useState<File[]>([])
+export default function EditProfilePage() {
+  const params = useParams();
+  const router = useRouter();
+  const [profile, setProfile] = useState<any>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [galleryImages, setGalleryImages] = useState<any[]>([]);
+  const [newProjectImages, setNewProjectImages] = useState<File[]>([]);
 
   useEffect(() => {
     // Fetch profile data, including gallery images
-    const fetchedProfile = profiles[params.id as keyof typeof profiles];
+    const fetchedProfile:any = profiles[params.id as keyof typeof profiles];
     setProfile(fetchedProfile);
-    setGalleryImages(fetchedProfile.galleryImages || []);
-  }, [params.id])
+    setGalleryImages(fetchedProfile?.galleryImages || []);
+  }, [params.id]);
 
   if (!profile) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const formData = new FormData();
 
@@ -53,20 +54,21 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
       formData.append("galleryImages", image.file);
     });
 
-
     // Send formData to backend
     // ...
 
-    router.push(`/profile/${params.id}`)
-  }
+    router.push(`/profile/${params.id}`);
+  };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setAvatarFile(e.target.files[0])
+      setAvatarFile(e.target.files[0]);
     }
-  }
+  };
 
-  const handleGalleryImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files).map((file) => ({
@@ -83,11 +85,13 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
     setGalleryImages(updatedGalleryImages);
   };
 
-  const handleProjectImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProjectImagesChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (e.target.files) {
-      setNewProjectImages(Array.from(e.target.files))
+      setNewProjectImages(Array.from(e.target.files));
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-8 space-y-8">
@@ -110,10 +114,22 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Label htmlFor="avatar">Profile Picture</Label>
               <div className="flex items-center space-x-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={avatarFile ? URL.createObjectURL(avatarFile) : profile.avatar} alt={profile.name} />
+                  <AvatarImage
+                    src={
+                      avatarFile
+                        ? URL.createObjectURL(avatarFile)
+                        : profile.avatar
+                    }
+                    alt={profile.name}
+                  />
                   <AvatarFallback>{profile.name[0]}</AvatarFallback>
                 </Avatar>
-                <Input id="avatar" type="file" accept="image/*" onChange={handleAvatarChange} />
+                <Input
+                  id="avatar"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                />
               </div>
             </div>
 
@@ -122,7 +138,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Input
                 id="name"
                 value={profile.name}
-                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, name: e.target.value })
+                }
               />
             </div>
 
@@ -131,7 +149,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Input
                 id="type"
                 value={profile.type}
-                onChange={(e) => setProfile({ ...profile, type: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, type: e.target.value })
+                }
               />
             </div>
 
@@ -140,7 +160,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Textarea
                 id="description"
                 value={profile.description}
-                onChange={(e) => setProfile({ ...profile, description: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, description: e.target.value })
+                }
                 rows={4}
               />
             </div>
@@ -150,7 +172,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Input
                 id="location"
                 value={profile.location}
-                onChange={(e) => setProfile({ ...profile, location: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, location: e.target.value })
+                }
               />
             </div>
 
@@ -160,7 +184,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
                 id="foundedYear"
                 type="number"
                 value={profile.foundedYear}
-                onChange={(e) => setProfile({ ...profile, foundedYear: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, foundedYear: e.target.value })
+                }
               />
             </div>
 
@@ -169,7 +195,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
               <Input
                 id="employeeCount"
                 value={profile.employeeCount}
-                onChange={(e) => setProfile({ ...profile, employeeCount: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, employeeCount: e.target.value })
+                }
               />
             </div>
 
@@ -217,6 +245,5 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

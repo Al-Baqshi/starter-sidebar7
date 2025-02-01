@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -80,7 +80,8 @@ const mockTenderDetail: TenderDetail = {
   ],
 }
 
-export default function TenderDetailPage({ params }: { params: { id: string } }) {
+export default function TenderDetailPage() {
+  const params = useParams()
   const router = useRouter()
   const [tender, setTender] = useState<TenderDetail | null>(null)
 

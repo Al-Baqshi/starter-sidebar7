@@ -1,15 +1,49 @@
-"use client"
+"use client";
 
-import { useParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ChartContainer } from "@/components/ui/chart"
-import { MapPin, Calendar, DollarSign, Clock, FileText, Users, Building, CheckCircle, Upload, Download, Image, Plus } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { useParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ChartContainer } from "@/components/ui/chart";
+import {
+  MapPin,
+  Calendar,
+  DollarSign,
+  Clock,
+  FileText,
+  Users,
+  Building,
+  CheckCircle,
+  Upload,
+  Download,
+  Image,
+  Plus,
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 // Mock data for a comprehensive project view
 const projectData = {
@@ -21,7 +55,8 @@ const projectData = {
     completion: 65,
     budget: 15000000,
     endDate: "2024-12-31",
-    description: "A 40-story mixed-use development in Auckland CBD featuring residential apartments, office spaces, and retail areas.",
+    description:
+      "A 40-story mixed-use development in Auckland CBD featuring residential apartments, office spaces, and retail areas.",
     projectManager: "Sarah Johnson",
     contractor: "BuildMaster Construction Co.",
     startDate: "2023-01-15",
@@ -33,7 +68,7 @@ const projectData = {
         status: "Completed",
         value: 2500000,
         contractor: "DeepDig Foundations",
-        completionDate: "2023-05-20"
+        completionDate: "2023-05-20",
       },
       {
         id: "T002",
@@ -41,7 +76,7 @@ const projectData = {
         status: "In Progress",
         value: 4500000,
         contractor: "SteelPro Industries",
-        completionDate: "2024-03-15"
+        completionDate: "2024-03-15",
       },
       {
         id: "T003",
@@ -49,21 +84,25 @@ const projectData = {
         status: "Pending",
         value: 3500000,
         contractor: "TBD",
-        completionDate: "2024-08-30"
-      }
+        completionDate: "2024-08-30",
+      },
     ],
     soq: {
       materials: [
         { category: "Concrete", estimated: 2500000, actual: 2650000 },
         { category: "Steel", estimated: 4000000, actual: 3900000 },
         { category: "Glass", estimated: 1500000, actual: 1600000 },
-        { category: "MEP", estimated: 3000000, actual: 3200000 }
+        { category: "MEP", estimated: 3000000, actual: 3200000 },
       ],
       labor: [
-        { category: "Construction Workers", estimated: 1200000, actual: 1250000 },
+        {
+          category: "Construction Workers",
+          estimated: 1200000,
+          actual: 1250000,
+        },
         { category: "Specialists", estimated: 800000, actual: 850000 },
-        { category: "Management", estimated: 500000, actual: 500000 }
-      ]
+        { category: "Management", estimated: 500000, actual: 500000 },
+      ],
     },
     timeline: [
       { month: "Jan 2023", planned: 1000000, actual: 950000 },
@@ -71,38 +110,51 @@ const projectData = {
       { month: "Jul 2023", planned: 4000000, actual: 3800000 },
       { month: "Oct 2023", planned: 5500000, actual: 5700000 },
       { month: "Jan 2024", planned: 7000000, actual: 7200000 },
-      { month: "Apr 2024", planned: 8500000, actual: 8400000 }
+      { month: "Apr 2024", planned: 8500000, actual: 8400000 },
     ],
     risks: [
-      { type: "Weather Delays", impact: "Medium", mitigation: "Additional resources on standby" },
-      { type: "Supply Chain", impact: "High", mitigation: "Multiple supplier agreements" },
-      { type: "Cost Overrun", impact: "Low", mitigation: "Contingency budget allocated" }
-    ]
-  }
-}
+      {
+        type: "Weather Delays",
+        impact: "Medium",
+        mitigation: "Additional resources on standby",
+      },
+      {
+        type: "Supply Chain",
+        impact: "High",
+        mitigation: "Multiple supplier agreements",
+      },
+      {
+        type: "Cost Overrun",
+        impact: "Low",
+        mitigation: "Contingency budget allocated",
+      },
+    ],
+  },
+};
 
-export function LineChartComponent({ data, categories, colors }) {
-  return (
-    <LineChart width={500} height={300} data={data}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="month" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      {categories.map((category, index) => (
-        <Line type="monotone" dataKey={category} stroke={colors[index]} key={category} />
-      ))}
-    </LineChart>
-  );
-}
+// export function LineChartComponent({ data, categories, colors }: any) {
+//   return (
+//     <div>LineChartComponent</div>
+//     // <LineChart width={500} height={300} data={data}>
+//     //   <CartesianGrid strokeDasharray="3 3" />
+//     //   <XAxis dataKey="month" />
+//     //   <YAxis />
+//     //   <Tooltip />
+//     //   <Legend />
+//     //   {categories?.map((category, index) => (
+//     //     <Line type="monotone" dataKey={category} stroke={colors[index]} key={category} />
+//     //   ))}
+//     // </LineChart>
+//   );
+// }
 
 export default function ProjectDetailsPage() {
-  const params = useParams()
-  const projectId = params.id as string
-  const project = projectData[projectId as keyof typeof projectData]
+  const params = useParams();
+  const projectId = params.id as string;
+  const project = projectData[projectId as keyof typeof projectData];
 
   if (!project) {
-    return <div>Project not found</div>
+    return <div>Project not found</div>;
   }
 
   return (
@@ -117,9 +169,11 @@ export default function ProjectDetailsPage() {
         </div>
         <Badge
           variant={
-            project.status === "In Progress" ? "default" :
-            project.status === "Completed" ? "success" :
-            "secondary"
+            project.status === "In Progress"
+              ? "default"
+              : project.status === "Completed"
+              ? "success"
+              : "secondary"
           }
           className="text-sm md:text-base"
         >
@@ -144,7 +198,9 @@ export default function ProjectDetailsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${(project.budget / 1000000).toFixed(1)}M</div>
+            <div className="text-2xl font-bold">
+              ${(project.budget / 1000000).toFixed(1)}M
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -169,13 +225,27 @@ export default function ProjectDetailsPage() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="flex overflow-x-auto space-x-2 pb-2">
-          <TabsTrigger value="overview" className="flex-shrink-0">Overview</TabsTrigger>
-          <TabsTrigger value="tenders" className="flex-shrink-0">Tenders</TabsTrigger>
-          <TabsTrigger value="soq" className="flex-shrink-0">SOQ Analysis</TabsTrigger>
-          <TabsTrigger value="financials" className="flex-shrink-0">Financials</TabsTrigger>
-          <TabsTrigger value="risks" className="flex-shrink-0">Risks</TabsTrigger>
-          <TabsTrigger value="documents" className="flex-shrink-0">Documents</TabsTrigger>
-          <TabsTrigger value="gallery" className="flex-shrink-0">Gallery</TabsTrigger>
+          <TabsTrigger value="overview" className="flex-shrink-0">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="tenders" className="flex-shrink-0">
+            Tenders
+          </TabsTrigger>
+          <TabsTrigger value="soq" className="flex-shrink-0">
+            SOQ Analysis
+          </TabsTrigger>
+          <TabsTrigger value="financials" className="flex-shrink-0">
+            Financials
+          </TabsTrigger>
+          <TabsTrigger value="risks" className="flex-shrink-0">
+            Risks
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="flex-shrink-0">
+            Documents
+          </TabsTrigger>
+          <TabsTrigger value="gallery" className="flex-shrink-0">
+            Gallery
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -188,24 +258,34 @@ export default function ProjectDetailsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p className="font-medium">Project Manager</p>
-                    <p className="text-sm text-muted-foreground">{project.projectManager}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {project.projectManager}
+                    </p>
                   </div>
                   <div>
                     <p className="font-medium">Main Contractor</p>
-                    <p className="text-sm text-muted-foreground">{project.contractor}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {project.contractor}
+                    </p>
                   </div>
                   <div>
                     <p className="font-medium">Start Date</p>
-                    <p className="text-sm text-muted-foreground">{project.startDate}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {project.startDate}
+                    </p>
                   </div>
                   <div>
                     <p className="font-medium">End Date</p>
-                    <p className="text-sm text-muted-foreground">{project.endDate}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {project.endDate}
+                    </p>
                   </div>
                 </div>
                 <div>
                   <p className="font-medium">Description</p>
-                  <p className="text-sm text-muted-foreground">{project.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {project.description}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -215,17 +295,17 @@ export default function ProjectDetailsPage() {
                 <CardTitle>Progress Timeline</CardTitle>
               </CardHeader>
               <CardContent className="h-[300px] md:h-[400px]">
-                <ChartContainer>
+                {/* <ChartContainer>
                   <LineChartComponent
-                    data={project.timeline.map(item => ({
+                    data={project.timeline.map((item) => ({
                       name: item.month,
                       planned: item.planned,
-                      actual: item.actual
+                      actual: item.actual,
                     }))}
                     categories={["planned", "actual"]}
                     colors={["#2563eb", "#16a34a"]}
                   />
-                </ChartContainer>
+                </ChartContainer> */}
               </CardContent>
             </Card>
           </div>
@@ -255,15 +335,21 @@ export default function ProjectDetailsPage() {
                       <TableCell>{tender.id}</TableCell>
                       <TableCell>{tender.name}</TableCell>
                       <TableCell>
-                        <Badge variant={
-                          tender.status === "Completed" ? "success" :
-                          tender.status === "In Progress" ? "default" :
-                          "secondary"
-                        }>
+                        <Badge
+                          variant={
+                            tender.status === "Completed"
+                              ? "success"
+                              : tender.status === "In Progress"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {tender.status}
                         </Badge>
                       </TableCell>
-                      <TableCell>${(tender.value / 1000000).toFixed(2)}M</TableCell>
+                      <TableCell>
+                        ${(tender.value / 1000000).toFixed(2)}M
+                      </TableCell>
                       <TableCell>{tender.contractor}</TableCell>
                       <TableCell>{tender.completionDate}</TableCell>
                     </TableRow>
@@ -295,13 +381,26 @@ export default function ProjectDetailsPage() {
                     {project.soq.materials.map((item) => (
                       <TableRow key={item.category}>
                         <TableCell>{item.category}</TableCell>
-                        <TableCell>${(item.estimated / 1000000).toFixed(2)}M</TableCell>
-                        <TableCell>${(item.actual / 1000000).toFixed(2)}M</TableCell>
-                        <TableCell className={
-                          item.actual > item.estimated ? "text-red-500" :
-                          item.actual < item.estimated ? "text-green-500" : ""
-                        }>
-                          {((item.actual - item.estimated) / item.estimated * 100).toFixed(1)}%
+                        <TableCell>
+                          ${(item.estimated / 1000000).toFixed(2)}M
+                        </TableCell>
+                        <TableCell>
+                          ${(item.actual / 1000000).toFixed(2)}M
+                        </TableCell>
+                        <TableCell
+                          className={
+                            item.actual > item.estimated
+                              ? "text-red-500"
+                              : item.actual < item.estimated
+                              ? "text-green-500"
+                              : ""
+                          }
+                        >
+                          {(
+                            ((item.actual - item.estimated) / item.estimated) *
+                            100
+                          ).toFixed(1)}
+                          %
                         </TableCell>
                       </TableRow>
                     ))}
@@ -329,13 +428,26 @@ export default function ProjectDetailsPage() {
                     {project.soq.labor.map((item) => (
                       <TableRow key={item.category}>
                         <TableCell>{item.category}</TableCell>
-                        <TableCell>${(item.estimated / 1000000).toFixed(2)}M</TableCell>
-                        <TableCell>${(item.actual / 1000000).toFixed(2)}M</TableCell>
-                        <TableCell className={
-                          item.actual > item.estimated ? "text-red-500" :
-                          item.actual < item.estimated ? "text-green-500" : ""
-                        }>
-                          {((item.actual - item.estimated) / item.estimated * 100).toFixed(1)}%
+                        <TableCell>
+                          ${(item.estimated / 1000000).toFixed(2)}M
+                        </TableCell>
+                        <TableCell>
+                          ${(item.actual / 1000000).toFixed(2)}M
+                        </TableCell>
+                        <TableCell
+                          className={
+                            item.actual > item.estimated
+                              ? "text-red-500"
+                              : item.actual < item.estimated
+                              ? "text-green-500"
+                              : ""
+                          }
+                        >
+                          {(
+                            ((item.actual - item.estimated) / item.estimated) *
+                            100
+                          ).toFixed(1)}
+                          %
                         </TableCell>
                       </TableRow>
                     ))}
@@ -353,17 +465,17 @@ export default function ProjectDetailsPage() {
               <CardDescription>Budget vs Actual Spending</CardDescription>
             </CardHeader>
             <CardContent className="h-[300px] md:h-[400px]">
-              <ChartContainer>
+              {/* <ChartContainer>
                 <LineChartComponent
-                  data={project.timeline.map(item => ({
+                  data={project.timeline.map((item) => ({
                     name: item.month,
                     planned: item.planned,
-                    actual: item.actual
+                    actual: item.actual,
                   }))}
                   categories={["planned", "actual"]}
                   colors={["#2563eb", "#16a34a"]}
                 />
-              </ChartContainer>
+              </ChartContainer> */}
             </CardContent>
           </Card>
         </TabsContent>
@@ -372,7 +484,9 @@ export default function ProjectDetailsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Risk Assessment</CardTitle>
-              <CardDescription>Current project risks and mitigation strategies</CardDescription>
+              <CardDescription>
+                Current project risks and mitigation strategies
+              </CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto">
               <Table>
@@ -388,11 +502,15 @@ export default function ProjectDetailsPage() {
                     <TableRow key={risk.type}>
                       <TableCell>{risk.type}</TableCell>
                       <TableCell>
-                        <Badge variant={
-                          risk.impact === "High" ? "destructive" :
-                          risk.impact === "Medium" ? "warning" :
-                          "default"
-                        }>
+                        <Badge
+                          variant={
+                            risk.impact === "High"
+                              ? "destructive"
+                              : risk.impact === "Medium"
+                              ? "warning"
+                              : "default"
+                          }
+                        >
                           {risk.impact}
                         </Badge>
                       </TableCell>
@@ -408,7 +526,9 @@ export default function ProjectDetailsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Project Documents</CardTitle>
-              <CardDescription>Upload and manage project-related documents</CardDescription>
+              <CardDescription>
+                Upload and manage project-related documents
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -480,7 +600,11 @@ export default function ProjectDetailsPage() {
                         alt={`Project photo ${photo}`}
                         className="object-cover rounded-md"
                       />
-                      <Button variant="secondary" size="sm" className="absolute bottom-2 right-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="absolute bottom-2 right-2"
+                      >
                         Update
                       </Button>
                     </div>
@@ -492,6 +616,5 @@ export default function ProjectDetailsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-
