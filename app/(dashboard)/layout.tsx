@@ -2,18 +2,16 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { ModeToggle } from "@/components/sidebar/mode-toogle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import React, { useEffect } from "react";
+import { useRegisterUserMutation } from "@/services/users";
 import {
   ClerkProvider,
+  RedirectToSignIn,
   SignedIn,
   SignedOut,
-  RedirectToSignIn,
   useUser,
 } from "@clerk/nextjs";
-import { Provider } from "react-redux";
-import store from "@/store";
 import { useRouter } from "next/navigation";
-import { useRegisterUserMutation } from "@/services/users";
+import React, { useEffect } from "react";
 
 export default function DashboardLayout({
   children,

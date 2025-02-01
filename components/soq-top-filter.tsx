@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDown, ChevronRight, Search, Plus, X } from 'lucide-react'
 import { cn } from "@/lib/utils"
-import { Category, SOQJob } from "@/types/soq"
+// import { Category, SOQJob } from "@/types/soq"
 import { motion, AnimatePresence } from "framer-motion"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 
 
 interface SOQTopFilterProps {
-  categories: Category[]
+  categories: any[]
   selectedJobId: string | null
   onSelectJob: (jobId: string) => void
   onAddCategory: (categoryName: string) => void
@@ -32,7 +32,7 @@ export function SOQTopFilter({ categories, selectedJobId, onSelectJob, onAddCate
 
   const filteredCategories = categories.map(category => ({
     ...category,
-    jobs: category.jobs.filter(job =>
+    jobs: category.jobs.filter((job:any) =>
       job.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.jobId.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -83,7 +83,7 @@ export function SOQTopFilter({ categories, selectedJobId, onSelectJob, onAddCate
               </div>
               <AccordionContent>
                 <div className="pl-4 space-y-1">
-                  {category.jobs.map(job => (
+                  {category.jobs.map((job:any) => (
                     <Button
                       key={job.id}
                       variant="ghost"

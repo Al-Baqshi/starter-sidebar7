@@ -1,40 +1,69 @@
-import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Save, Upload, Check, Clock, ChevronDown, ChevronUp, RefreshCw, Plus, FileUp, Link, PaperclipIcon, MessageSquare, PlusCircle, ExternalLink, Download } from 'lucide-react'
-import { SOQJob, SOQItem, LaborItem, Note } from "@/types/soq"
-import { motion, AnimatePresence } from "framer-motion"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SOQJob } from "@/types/soq";
+import { motion } from "framer-motion";
+import {
+  Check,
+  ChevronDown,
+  Clock,
+  MessageSquare,
+  Plus,
+  RefreshCw,
+  Save,
+} from "lucide-react";
+import React from "react";
 
 interface JobDetailsProps {
-  job: SOQJob
-  updateMaterialInput: (jobId: string, itemId: string, field: keyof SOQItem, value: string | number | File[]) => void
-  updateLaborInput: (jobId: string, itemId: string, field: keyof LaborItem, value: string | number) => void
-  addMaterial: (jobId: string) => void
-  addLabor: (jobId: string) => void
-  submitBid: (jobId: string) => void
-  withdrawBid: (jobId: string) => void
-  openNotesDialog: (jobId: string, itemId: string, isLabor: boolean) => void
-  openVariationDialog: (jobId: string, itemId: string, isLabor: boolean) => void
-  isExpanded: boolean
+  job: any;
+  updateMaterialInput: (
+    jobId: string,
+    itemId: string,
+    field: any,
+    value: string | number | File[]
+  ) => void;
+  updateLaborInput: (
+    jobId: string,
+    itemId: string,
+    field: any,
+    value: string | number
+  ) => void;
+  addMaterial: (jobId: string) => void;
+  addLabor: (jobId: string) => void;
+  submitBid: (jobId: string) => void;
+  withdrawBid: (jobId: string) => void;
+  openNotesDialog: (jobId: string, itemId: string, isLabor: boolean) => void;
+  openVariationDialog: (
+    jobId: string,
+    itemId: string,
+    isLabor: boolean
+  ) => void;
+  isExpanded: boolean;
 }
 
 const unitOptions = [
-  { value: 'm3', label: 'Volume (m³)', description: 'Cubic metres' },
-  { value: 'm2', label: 'Area (m²)', description: 'Square metres' },
-  { value: 'm', label: 'Length (m)', description: 'Linear metres' },
-  { value: 'no', label: 'Number', description: 'Quantity' },
-  { value: 'kg', label: 'Weight (kg)', description: 'Kilograms' },
-]
+  { value: "m3", label: "Volume (m³)", description: "Cubic metres" },
+  { value: "m2", label: "Area (m²)", description: "Square metres" },
+  { value: "m", label: "Length (m)", description: "Linear metres" },
+  { value: "no", label: "Number", description: "Quantity" },
+  { value: "kg", label: "Weight (kg)", description: "Kilograms" },
+];
 
 export function JobDetails({
   job,
@@ -46,25 +75,41 @@ export function JobDetails({
   withdrawBid,
   openNotesDialog,
   openVariationDialog,
-  isExpanded
+  isExpanded,
 }: JobDetailsProps) {
-  const [openPopover, setOpenPopover] = React.useState(false)
+  const [openPopover, setOpenPopover] = React.useState(false);
 
   return (
     <Collapsible open={isExpanded} className="w-full">
       <CollapsibleTrigger className="w-full">
         <motion.div
           initial={false}
-          animate={{ backgroundColor: isExpanded ? (job.status === 'submitted' ? "#10B981" : "#3B82F6") : "#E5E7EB" }}
-          className={`flex justify-between items-center p-4 rounded-lg ${isExpanded ? "text-white" : "text-gray-900"}`}
+          animate={{
+            backgroundColor: isExpanded
+              ? job.status === "submitted"
+                ? "#10B981"
+                : "#3B82F6"
+              : "#E5E7EB",
+          }}
+          className={`flex justify-between items-center p-4 rounded-lg ${
+            isExpanded ? "text-white" : "text-gray-900"
+          }`}
         >
-          <h3 className="text-xl font-bold">Job {job.rawNumber}: {job.jobId} - {job.name}</h3>
+          <h3 className="text-xl font-bold">
+            Job {job.rawNumber}: {job.jobId} - {job.name}
+          </h3>
           <div className="flex items-center space-x-2">
-            <Badge variant={job.status === 'submitted' ? "secondary" : "outline"}>
-              {job.status === 'submitted' ? (
-                <><Check className="mr-1 h-4 w-4" /> Submitted</>
+            <Badge
+              variant={job.status === "submitted" ? "secondary" : "outline"}
+            >
+              {job.status === "submitted" ? (
+                <>
+                  <Check className="mr-1 h-4 w-4" /> Submitted
+                </>
               ) : (
-                <><Clock className="mr-1 h-4 w-4" /> Pending</>
+                <>
+                  <Clock className="mr-1 h-4 w-4" /> Pending
+                </>
               )}
             </Badge>
             <motion.div
@@ -87,13 +132,17 @@ export function JobDetails({
           <div className="p-4 border border-t-0 rounded-b-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <p><strong>Description:</strong> {job.description}</p>
+                <p>
+                  <strong>Description:</strong> {job.description}
+                </p>
               </div>
               <div>
-                <p><strong>Time Frame:</strong> {job.startDate} to {job.endDate}</p>
+                <p>
+                  <strong>Time Frame:</strong> {job.startDate} to {job.endDate}
+                </p>
               </div>
             </div>
-            
+
             <Tabs defaultValue="materials" className="w-full">
               <TabsList>
                 <TabsTrigger value="materials">Materials</TabsTrigger>
@@ -105,7 +154,9 @@ export function JobDetails({
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[50px]">No.</TableHead>
-                        <TableHead className="w-[200px]">Item Description</TableHead>
+                        <TableHead className="w-[200px]">
+                          Item Description
+                        </TableHead>
                         <TableHead>Unit</TableHead>
                         <TableHead>Est. Qty</TableHead>
                         <TableHead>Bid Qty</TableHead>
@@ -115,36 +166,52 @@ export function JobDetails({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {job.items.map(item => (
+                      {job.items.map((item:any) => (
                         <TableRow key={item.id}>
                           <TableCell>{item.number}</TableCell>
                           <TableCell>{item.description}</TableCell>
                           <TableCell>{item.unit}</TableCell>
                           <TableCell>{item.estimatedQuantity}</TableCell>
                           <TableCell>
-                            <Input 
+                            <Input
                               type="number"
-                              value={item.bidderQuantity || ''}
-                              onChange={(e) => updateMaterialInput(job.id, item.id, 'bidderQuantity', Number(e.target.value))}
+                              value={item.bidderQuantity || ""}
+                              onChange={(e) =>
+                                updateMaterialInput(
+                                  job.id,
+                                  item.id,
+                                  "bidderQuantity",
+                                  Number(e.target.value)
+                                )
+                              }
                               className="w-20"
-                              disabled={job.status === 'submitted'}
+                              disabled={job.status === "submitted"}
                             />
                           </TableCell>
                           <TableCell>
-                            <Input 
+                            <Input
                               type="number"
-                              value={item.unitRate || ''}
-                              onChange={(e) => updateMaterialInput(job.id, item.id, 'unitRate', Number(e.target.value))}
+                              value={item.unitRate || ""}
+                              onChange={(e) =>
+                                updateMaterialInput(
+                                  job.id,
+                                  item.id,
+                                  "unitRate",
+                                  Number(e.target.value)
+                                )
+                              }
                               className="w-20"
-                              disabled={job.status === 'submitted'}
+                              disabled={job.status === "submitted"}
                             />
                           </TableCell>
                           <TableCell>${item.totalCost.toFixed(2)}</TableCell>
                           <TableCell>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => openNotesDialog(job.id, item.id, false)}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                openNotesDialog(job.id, item.id, false)
+                              }
                             >
                               <MessageSquare className="h-4 w-4 mr-2" />
                               Notes
@@ -155,7 +222,13 @@ export function JobDetails({
                     </TableBody>
                   </Table>
                 </ScrollArea>
-                <Button variant="outline" size="sm" onClick={() => addMaterial(job.id)} className="mt-2" disabled={job.status === 'submitted'}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addMaterial(job.id)}
+                  className="mt-2"
+                  disabled={job.status === "submitted"}
+                >
                   <Plus className="mr-2 h-4 w-4" /> Add Material
                 </Button>
               </TabsContent>
@@ -165,7 +238,9 @@ export function JobDetails({
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[50px]">No.</TableHead>
-                        <TableHead className="w-[200px]">Labor Description</TableHead>
+                        <TableHead className="w-[200px]">
+                          Labor Description
+                        </TableHead>
                         <TableHead>Est. Staff</TableHead>
                         <TableHead>Bid Staff</TableHead>
                         <TableHead>Est. Hours</TableHead>
@@ -176,45 +251,68 @@ export function JobDetails({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {job.laborItems.map(item => (
+                      {job.laborItems.map((item:any) => (
                         <TableRow key={item.id}>
                           <TableCell>{item.number}</TableCell>
                           <TableCell>{item.description}</TableCell>
                           <TableCell>{item.estimatedStaff}</TableCell>
                           <TableCell>
-                            <Input 
+                            <Input
                               type="number"
-                              value={item.bidderStaff || ''}
-                              onChange={(e) => updateLaborInput(job.id, item.id, 'bidderStaff', Number(e.target.value))}
+                              value={item.bidderStaff || ""}
+                              onChange={(e) =>
+                                updateLaborInput(
+                                  job.id,
+                                  item.id,
+                                  "bidderStaff",
+                                  Number(e.target.value)
+                                )
+                              }
                               className="w-16"
-                              disabled={job.status === 'submitted'}
+                              disabled={job.status === "submitted"}
                             />
                           </TableCell>
                           <TableCell>{item.estimatedHours}</TableCell>
                           <TableCell>
-                            <Input 
+                            <Input
                               type="number"
-                              value={item.bidderHours || ''}
-                              onChange={(e) => updateLaborInput(job.id, item.id, 'bidderHours', Number(e.target.value))}
+                              value={item.bidderHours || ""}
+                              onChange={(e) =>
+                                updateLaborInput(
+                                  job.id,
+                                  item.id,
+                                  "bidderHours",
+                                  Number(e.target.value)
+                                )
+                              }
                               className="w-20"
-                              disabled={job.status === 'submitted'}
+                              disabled={job.status === "submitted"}
                             />
                           </TableCell>
                           <TableCell>
-                            <Input 
+                            <Input
                               type="number"
-                              value={item.hourlyRate || ''}
-                              onChange={(e) => updateLaborInput(job.id, item.id, 'hourlyRate', Number(e.target.value))}
+                              value={item.hourlyRate || ""}
+                              onChange={(e) =>
+                                updateLaborInput(
+                                  job.id,
+                                  item.id,
+                                  "hourlyRate",
+                                  Number(e.target.value)
+                                )
+                              }
                               className="w-20"
-                              disabled={job.status === 'submitted'}
+                              disabled={job.status === "submitted"}
                             />
                           </TableCell>
                           <TableCell>${item.totalCost.toFixed(2)}</TableCell>
                           <TableCell>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => openNotesDialog(job.id, item.id, true)}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                openNotesDialog(job.id, item.id, true)
+                              }
                             >
                               <MessageSquare className="h-4 w-4 mr-2" />
                               Notes
@@ -225,21 +323,30 @@ export function JobDetails({
                     </TableBody>
                   </Table>
                 </ScrollArea>
-                <Button variant="outline" size="sm" onClick={() => addLabor(job.id)} className="mt-2" disabled={job.status === 'submitted'}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addLabor(job.id)}
+                  className="mt-2"
+                  disabled={job.status === "submitted"}
+                >
                   <Plus className="mr-2 h-4 w-4" /> Add Labor
                 </Button>
               </TabsContent>
             </Tabs>
 
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-center">
-              <p className="text-lg font-bold mb-2 sm:mb-0">Total Bid: ${job.totalBid.toFixed(2)}</p>
-              {job.status === 'submitted' ? (
+              <p className="text-lg font-bold mb-2 sm:mb-0">
+                Total Bid: ${job.totalBid.toFixed(2)}
+              </p>
+              {job.status === "submitted" ? (
                 <Button variant="outline" onClick={() => withdrawBid(job.id)}>
                   <RefreshCw className="mr-2 h-4 w-4" /> Withdraw and Resubmit
                 </Button>
               ) : (
                 <Button onClick={() => submitBid(job.id)}>
-                  <Save className="mr-2 h-4 w-4" />Submit Bid
+                  <Save className="mr-2 h-4 w-4" />
+                  Submit Bid
                 </Button>
               )}
             </div>
@@ -247,7 +354,7 @@ export function JobDetails({
         </motion.div>
       </CollapsibleContent>
     </Collapsible>
-  )
+  );
 }
 
 export function JobDetailsSkeleton() {
@@ -265,6 +372,5 @@ export function JobDetailsSkeleton() {
         <Skeleton className="h-10 w-40" />
       </div>
     </div>
-  )
+  );
 }
-

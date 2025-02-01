@@ -341,7 +341,7 @@ return (
                       {...field}
                       isMulti
                       onChange={(newValue) => {
-                        const specialties = newValue.map((item) => item.value);
+                        const specialties = newValue?.map((item:any) => item.value);
                         field.onChange(specialties);
                       }}
                       placeholder="e.g., Residential, Commercial, Renovation"

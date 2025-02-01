@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +13,8 @@ import { ChevronLeft, Upload, Trash2, Plus } from 'lucide-react'
 import { profiles } from '@/data/profiles'
 import Image from 'next/image';
 
-export default function EditProfilePage({ params }: { params: { id: string } }) {
+export default function EditProfilePage() {
+  const params = useParams()
   const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
@@ -22,9 +23,9 @@ export default function EditProfilePage({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     // Fetch profile data, including gallery images
-    const fetchedProfile = profiles[params.id as keyof typeof profiles];
+    const fetchedProfile:any = profiles[params.id as keyof typeof profiles];
     setProfile(fetchedProfile);
-    setGalleryImages(fetchedProfile.galleryImages || []);
+    setGalleryImages(fetchedProfile?.galleryImages || []);
   }, [params.id])
 
   if (!profile) {

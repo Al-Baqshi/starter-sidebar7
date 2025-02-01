@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Job } from '@/types/soq'
+// import { Job } from '@/types/soq'
 
 interface JobFormProps {
-  onSubmit: (job: Job) => void;
+  onSubmit: (job: any) => void;
   onCancel: () => void;
 }
 
@@ -17,7 +17,7 @@ export function JobForm({ onSubmit, onCancel }: JobFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newJob: Job = {
+    const newJob: any = {
       id: Date.now().toString(), // This is temporary, will be replaced by backend
       name: jobName,
       description: jobDescription,

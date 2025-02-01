@@ -478,23 +478,25 @@ export default function CreateProfilePage() {
                           onChange={handleGalleryImagesChange}
                         />
                         <div className="grid grid-cols-3 gap-4 mt-4">
-                          {galleryPreviews.map((preview, index) => (
-                            <div key={index} className="relative">
-                              <img
-                                src={preview}
-                                alt={`Gallery image ${index + 1}`}
-                                className="w-full h-32 object-cover rounded-md"
-                              />
-                              <Button
-                                variant="destructive"
-                                size="icon"
-                                className="absolute top-1 right-1"
-                                onClick={() => removeGalleryImage(index)}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ))}
+                          {galleryPreviews?.map(
+                            (preview: any, index: number) => (
+                              <div key={index} className="relative">
+                                <img
+                                  src={preview}
+                                  alt={`Gallery image ${index + 1}`}
+                                  className="w-full h-32 object-cover rounded-md"
+                                />
+                                <Button
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1"
+                                  onClick={() => removeGalleryImage(index)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     </FormControl>

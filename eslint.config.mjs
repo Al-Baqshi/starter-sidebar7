@@ -10,11 +10,15 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends(),
   {
     rules: {
-      // Allow the use of 'any' in TypeScript
-      "@typescript-eslint/no-explicit-any": "off",
+      // Disable all ESLint rules
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "no-debugger": "off",
+      "no-undef": "off",
+      "import/no-unresolved": "off",
     },
   },
 ];

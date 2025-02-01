@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Job, MaterialItem, LaborItem } from '@/types/soq'
+// import { Job, MaterialItem, LaborItem } from '@/types/soq'
 import { Plus, Minus, PaperclipIcon, Link2, Trash2, CheckCircle } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -23,7 +23,7 @@ const unitOptions = [
   { value: 'kg', label: 'Weight (kg)' }
 ];
 
-const mockJobs: Job[] = [
+const mockJobs: any[] = [
   {
     id: "1",
     jobId: "J001",
@@ -143,27 +143,27 @@ const mockJobs: Job[] = [
 ];
 
 interface JobListProps {
-  jobs: Job[];
-  updateJob: (job: Job) => void;
+  jobs: any[];
+  updateJob: (job: any) => void;
 }
 
 export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
-  const [dialogState, setDialogState] = useState<{ isOpen: boolean; job: Job | null; labor: LaborItem | null }>({
+  const [dialogState, setDialogState] = useState<{ isOpen: boolean; job: any | null; labor: any | null }>({
     isOpen: false,
     job: null,
     labor: null
   });
 
-  const calculateTotalCost = (job: Job) => {
-    const materialsCost = job.materials.reduce((sum, material) =>
+  const calculateTotalCost = (job: any) => {
+    const materialsCost = job.materials.reduce((sum:any, material:any) =>
       sum + (material.estimatedQuantity * material.unitRate), 0);
-    const laborCost = job.labor.reduce((sum, labor) =>
+    const laborCost = job.labor.reduce((sum:any, labor:any) =>
       sum + (labor.estimatedStaff * labor.estimatedHours * labor.hourlyRate), 0);
     return materialsCost + laborCost;
   };
 
-  const handleAddMaterial = (job: Job) => {
+  const handleAddMaterial = (job: any) => {
     if (job.status === 'ready') return;
     const updatedJob = {
       ...job,
@@ -185,7 +185,7 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
     updateJob(updatedJob);
   };
 
-  const handleAddLabor = (job: Job) => {
+  const handleAddLabor = (job: any) => {
     if (job.status === 'ready') return;
     const updatedJob = {
       ...job,
@@ -208,9 +208,9 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
     updateJob(updatedJob);
   };
 
-  const handleUpdateMaterial = (job: Job, materialId: string, field: keyof MaterialItem, value: string | number) => {
+  const handleUpdateMaterial = (job: any, materialId: string, field: any, value: string | number) => {
     if (job.status === 'ready') return;
-    const updatedMaterials = job.materials.map(material =>
+    const updatedMaterials = job.materials.map((material:any) =>
       material.id === materialId ? { ...material, [field]: value } : material
     );
     const updatedJob = { ...job, materials: updatedMaterials };
@@ -218,9 +218,9 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
     updateJob(updatedJob);
   };
 
-  const handleUpdateLabor = (job: Job, laborId: string, field: keyof LaborItem, value: any) => {
+  const handleUpdateLabor = (job: any, laborId: string, field: any, value: any) => {
     if (job.status === 'ready') return;
-    const updatedLabor = job.labor.map(labor =>
+    const updatedLabor = job.labor.map((labor:any) =>
       labor.id === laborId ? { ...labor, [field]: value } : labor
     );
     const updatedJob = { ...job, labor: updatedLabor };
@@ -228,32 +228,32 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
     updateJob(updatedJob);
   };
 
-  const handleDeleteMaterial = (job: Job, materialId: string) => {
+  const handleDeleteMaterial = (job: any, materialId: string) => {
     if (job.status === 'ready') return;
-    const updatedMaterials = job.materials.filter(m => m.id !== materialId);
+    const updatedMaterials = job.materials.filter((m:any) => m.id !== materialId);
     const updatedJob = { ...job, materials: updatedMaterials };
     updateJob(updatedJob);
   };
 
-  const handleDeleteLabor = (job: Job, laborId: string) => {
+  const handleDeleteLabor = (job: any, laborId: string) => {
     if (job.status === 'ready') return;
-    const updatedLabor = job.labor.filter(l => l.id !== laborId);
+    const updatedLabor = job.labor.filter((l:any) => l.id !== laborId);
     const updatedJob = { ...job, labor: updatedLabor };
     updateJob(updatedJob);
   };
 
-  const handleStatusChange = (job: Job, status: 'draft' | 'ready') => {
+  const handleStatusChange = (job: any, status: 'draft' | 'ready') => {
     const updatedJob = { ...job, status };
     updateJob(updatedJob);
   };
 
-  const handleAddToTender = (job: Job) => {
+  const handleAddToTender = (job: any) => {
     if (job.status !== 'ready') return;
     const updatedJob = { ...job, includedInTender: true };
     updateJob(updatedJob);
   };
 
-  const handleOpenNoteDialog = (job: Job, labor: LaborItem) => {
+  const handleOpenNoteDialog = (job: any, labor: any) => {
     if (job.status !== 'ready') {
       setDialogState({ isOpen: true, job, labor });
     }
@@ -334,7 +334,7 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {job.materials.map((material) => (
+                      {job.materials.map((material:any) => (
                         <TableRow key={material.id}>
                           <TableCell>
                             <Input
@@ -420,7 +420,7 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {job.labor.map((labor) => (
+                      {job.labor.map((labor:any) => (
                         <TableRow key={labor.id}>
                           <TableCell>
                             <Input
@@ -523,7 +523,7 @@ export function JobList({ jobs = mockJobs, updateJob }: JobListProps) {
               <div>
                 <h4 className="mb-2 font-semibold">Attachments:</h4>
                 <ul className="list-disc pl-5">
-                  {dialogState.labor.attachments.map((attachment, index) => (
+                  {dialogState.labor.attachments.map((attachment:any, index:number) => (
                     <li key={index}>{attachment}</li>
                   ))}
                 </ul>

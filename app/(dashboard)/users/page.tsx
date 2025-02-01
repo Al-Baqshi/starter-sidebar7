@@ -67,8 +67,8 @@ export default function UsersPage() {
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [userType, setUserType] = useState<"inhouse" | "external">("external");
-  const { data: userRoles } = useGetUserRolesQuery();
-  const { data: userCategories, isLoading: isLoadingCategories } =
+  const { data: userRoles }: any = useGetUserRolesQuery();
+  const { data: userCategories, isLoading: isLoadingCategories }: any =
     useGetUserCategoriesQuery();
   const [inviteUser] = useInviteSubUsersMutation();
 
@@ -83,7 +83,7 @@ export default function UsersPage() {
     },
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: any) => {
     console.log(values, "values");
     // const payload = {
     //   email: values.email,

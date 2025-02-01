@@ -24,7 +24,7 @@ import { useSendBulkEmailMutation } from "@/services/users";
 
 interface FiltersProps {
   users: any[];
-  setFilteredUsers: (users: any[]) => void;
+  setFilteredUsers: any;
   categories: any;
   roles: string[];
   entities: any[];

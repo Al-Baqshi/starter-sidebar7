@@ -49,7 +49,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "../ui/use-toast";
 
-export function UserList({ userCategories }) {
+export function UserList({ userCategories }:any) {
   // State management
   const [users, setUsers] = useState([]);
   const [entities] = useState(mockEntities);
@@ -64,7 +64,7 @@ export function UserList({ userCategories }) {
   const [selectedUserForEdit, setSelectedUserForEdit] = useState<any>(null);
   const [isAddRoleDialogOpen, setIsAddRoleDialogOpen] = useState(false);
 
-  const { data: userData, isLoading } = useGetUserQuery();
+  const { data: userData, isLoading }:any = useGetUserQuery();
   // const { data: userCategories, isLoading: isLoadingCategories } =
   //   useGetUserCategoriesQuery();
   const [createCategory] = useCreateUserCategoryMutation();
@@ -75,7 +75,7 @@ export function UserList({ userCategories }) {
     if (selectedUsers.length === filteredUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredUsers.map((user) => user.id));
+      setSelectedUsers(filteredUsers.map((user:any) => user?.id));
     }
   };
 
@@ -118,7 +118,7 @@ export function UserList({ userCategories }) {
   };
 
   // Edit User Dialog component
-  const EditUserDialog = ({ user, isOpen, onClose }) => {
+  const EditUserDialog = ({ user, isOpen, onClose }:any) => {
     const [editedUser, setEditedUser] = useState(user);
     const [selectedRole, setSelectedRole] = useState(user.role || "");
 
@@ -150,7 +150,7 @@ export function UserList({ userCategories }) {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       // Update the user in the users array
-      const updatedUsers = users.map((u) =>
+      const updatedUsers:any = users.map((u:any) =>
         u.id === editedUser.id ? editedUser : u
       );
       setUsers(updatedUsers);
@@ -244,7 +244,7 @@ export function UserList({ userCategories }) {
   };
 
   // Add Role Dialog component
-  const AddRoleDialog = ({ isOpen, onClose }) => {
+  const AddRoleDialog = ({ isOpen, onClose }:any) => {
     const [newRole, setNewRole] = useState<Role>({
       id: (roles.length + 1).toString(),
       name: "",
@@ -439,7 +439,7 @@ export function UserList({ userCategories }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers?.map((user) => (
+                  {filteredUsers?.map((user:any) => (
                     <TableRow key={user?.id}>
                       <TableCell>
                         <Checkbox
@@ -502,7 +502,7 @@ export function UserList({ userCategories }) {
                       <Checkbox
                         checked={
                           selectedUsers?.length ===
-                          filteredUsers?.filter((user) => user?.role)?.length
+                          filteredUsers?.filter((user:any) => user?.role)?.length
                         }
                         onCheckedChange={toggleSelectAll}
                       />
@@ -517,8 +517,8 @@ export function UserList({ userCategories }) {
                 </TableHeader>
                 <TableBody>
                   {filteredUsers
-                    ?.filter((user) => user?.role)
-                    ?.map((user) => (
+                    ?.filter((user:any) => user?.role)
+                    ?.map((user:any) => (
                       <TableRow key={user?.id}>
                         <TableCell>
                           <Checkbox
@@ -591,7 +591,7 @@ export function UserList({ userCategories }) {
                           checked={
                             selectedUsers?.length ===
                             filteredUsers?.filter(
-                              (user) => user?.category === category?.id
+                              (user:any) => user?.category === category?.id
                             ).length
                           }
                           onCheckedChange={toggleSelectAll}
@@ -622,8 +622,8 @@ export function UserList({ userCategories }) {
                   </TableHeader>
                   <TableBody>
                     {filteredUsers
-                      ?.filter((user) => user?.category === category?.id)
-                      ?.map((user) => (
+                      ?.filter((user:any) => user?.category === category?.id)
+                      ?.map((user:any) => (
                         <TableRow key={user?.id}>
                           <TableCell>
                             <Checkbox

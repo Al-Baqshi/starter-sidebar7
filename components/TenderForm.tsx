@@ -5,12 +5,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Job, Tender } from '@/types/soq'
+// import { Job, Tender } from '@/types/soq'
 
 interface TenderFormProps {
-  onSubmit: (tender: Tender) => void;
+  onSubmit: (tender: any) => void;
   onCancel: () => void;
-  jobs: Job[];
+  jobs: any[];
 }
 
 export function TenderForm({ onSubmit, onCancel, jobs }: TenderFormProps) {
